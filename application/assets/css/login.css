@@ -1,0 +1,61 @@
+body
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #4365A4;
+}
+
+.logo
+{
+    width: 22.875rem;
+    height: 11.5rem;
+    margin-top: 15%;
+    margin-bottom: 5%;
+}
+
+.login
+{
+    width: 37.5rem;
+    height: 42.125rem;
+    margin-top: 5%;
+    background-color: white;
+    border-radius: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    box-shadow: 0 0 20px rgba(0, 0, 0, .5);
+
+}
+
+.id_field
+{
+    font-size: 1.875rem;
+}
+
+.login_input
+{
+    width: 90%;
+    height: 12.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-bottom: 10%;
+}
+
+input
+{
+    border-radius: 3.125rem;
+    height: 3.125rem;
+    width: 31.25rem;
+}
+
+button
+{
+    border-radius: 3.125rem;
+    width: 14.375rem;
+    height: 4.375rem;
+    background-color: blue;
+}
+
