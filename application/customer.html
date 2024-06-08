@@ -40,17 +40,17 @@
             <!-- Opções de criação -->
             <div class="optionGrp">
                 <div class="actionBtn">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#customerModal">
+                    <button type="button" class="btn btn-success" id="createBtn" onclick="openDataScreen('add')">
                         Criar
                         <i class="fas fa-plus"></i>
                     </button>
 
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customerModal">
+                    <button type="button" class="btn btn-primary" id="editBtn" onclick="openDataScreen('edit')">
                         Editar
                         <i class="fas fa-edit"></i>
                     </button>
     
-                    <button type="button" class="btn btn-danger">
+                    <button type="button" id="removeBtn" class="btn btn-danger">
                         Excluir
                         <i class="fas fa-trash"></i>
                     </button>
@@ -62,9 +62,68 @@
                     <i class="fas fa-search searchBtn"></i>
                 </div>
 
-                <button type="button" class="btn btn-primary" data-bs-toogle="modal" data-bs-target="#exampleModalCenter">
+                <button type="button" class="btn btn-primary" id="filterPopover" data-bs-sanitize="false"  data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom">
                     Filtros...
                 </button>
+
+                <div hidden id="popoverContent">
+                    <div class="popoverContent">
+                        <!-- Tipo de filtro (Opções) -->
+                        <div class="filterType">
+                            <select class="form-select" id="filterType">
+                                <option selected hidden disabled>Filtrar por:</option>
+                                <option value="nome">Nome</option>
+                                <option value="cpf">CPF</option>
+                                <option value="telefone">Telefone</option>
+                                <option value="email">Email</option>
+                                <option value="endereco">Endereço</option>
+                            </select>
+                        </div>
+
+                        <!-- sinal (igual, diferente) -->
+                        <div class="filterSignal">
+                            <select class="form-select" id="filterSignal">
+                                <option value="igual">Igual</option>
+                                <option value="diferente">Diferente</option>
+                            </select>
+                        </div>
+
+                        <!-- Valor -->
+                        <div class="filterValue">
+                            <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                        </div>
+
+                        <!-- Botão Adicionar Filtro -->
+                        <div class="addFilter">
+                            <button type="button" class="btn btn-primary" id="addFilterBtn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de filtros: Adicionado dinamicamente no código -->
+                    <hr>
+                    <div class="filterList">
+                        <ul class="list-group" id="filterList">
+                            <li class="list-group-item">
+                                Nome igual a "João"
+                                <button type="button" class="btn btn-danger" id="removeFilterBtn"><i class="fas fa-times"></i></button>
+                            </li>
+                        </ul>
+
+                        <ul class="list-group" id="filterList">
+                            <li class="list-group-item">
+                                Endereço diferente de "Rua das Flores, 123"
+                                <button type="button" class="btn btn-danger" id="removeFilterBtn"><i class="fas fa-times"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                    <hr>
+
+                    <div class="popoverBtns">
+                        <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
+                        <button type="button" class="btn btn-secondary" id="clearFilterBtn">Limpar</button>
+                    </div>
+
+                </div>
             </div>
             <!---->
 
@@ -83,7 +142,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="selectedRow" ondblclick="openDataScreen()" onclick="selectRow(this, 'single')">
+                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single')">
                             <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation();"></td>
                             <td>123456</td>
                             <td>João da Silva</td>
@@ -92,14 +151,14 @@
                             <td> joão@gmail.com </td>
                             <td> Rua das Flores, 123 </td>
                         </tr>
-                        <tr class="selectedRow" ondblclick="openDataScreen()" onclick="selectRow(this, 'single')">
+                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single')">
                             <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation();"></td>
                             <td>123456</td>
                             <td>João da Silva</td>
                             <td>123.456.789-00</td>
                             <td>(11) 99999-9999</td>
                             <td> joão@gmail.com </td>
-                            <td> Rua das Flores, 123 </td>
+                            <td> Rua Gothard Kaesemodel, Anita Garibaldi, Joinville - SC </td>
                         </tr>
                     </tbody>
                 </table>
@@ -108,21 +167,107 @@
             
             <!--  Modal dos dados do cliente -->
             <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Dados do cliente</h1>
+                            <h1 class="modal-title fs-5" id="modalTitle">Dados do cliente: ID - Nome</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         <div class="modal-body">
-                        ...
+                            <form>
+                                <!-- Dados gerais -->
+                                <div class="formSection" id="dadosGerais">
+                                    <div class="sectionTitle">
+                                        <h5>Dados gerais:</h5>
+                                    </div>
+
+                                    <div class="mb-3 customerName">
+                                        <label for="customerName" class="form-label">Nome:</label>
+                                        <input type="text" class="form-control" id="customerName">
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerCPF" class="form-label">CPF:</label>
+                                            <input type="text" class="form-control customerCPF" id="customerCPF">
+                                        </div>
+    
+                                        <div class="mb-3">
+                                            <label for="customerPhone" class="form-label
+                                            ">Telefone:</label>
+                                            <input type="text" class="form-control customerPhone" id="customerPhone">
+                                        </div>
+                                    </div>
+    
+                                    <div class="mb-3">
+                                        <label for="customerEmail" class="form-label
+                                        ">Email:</label>
+                                        <input type="email" class="form-control" id="customerEmail">
+                                    </div>
+                                </div>
+                                <!---->
+
+                                <!-- Endereço -->
+                                <div class="formSection" id="endereço">
+                                    <div class="sectionTitle">
+                                        <h5>Endereço:</h5>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="customerCEP" class="form-label
+                                        ">CEP:</label>
+                                        <input type="text" class="form-control customerCEP" id="customerCEP">
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerEstado" class="form-label
+                                            ">Estado:</label>
+                                            <input type="text" class="form-control customerEstado" id="customerEstado">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="customerCidade" class="form-label
+                                            ">Cidade:</label>
+                                            <input type="text" class="form-control customerCidade" id="customerCidade">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerBairro" class="form-label
+                                            ">Bairro:</label>
+                                            <input type="text" class="form-control customerBairro" id="customerBairro">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="customerRua" class="form-label
+                                            ">Rua:</label>
+                                            <input type="text" class="form-control customerRua" id="customerRua">
+                                        </div>
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerNumero" class="form-label">Numero:</label>
+                                            <input type="text" class="form-control customerNumero" id="customerNumero">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="customerComplemento" class="form-label">Complemento:</label>
+                                            <input type="text" class="form-control customerComplemento" id="customerComplemento">
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <!---->
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
-                            <button type="button" class="btn btn-success">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
+                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
+                            <button type="button" class="btn btn-success" id="createCustomer">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
                         </div>
                     </div>
                 </div>

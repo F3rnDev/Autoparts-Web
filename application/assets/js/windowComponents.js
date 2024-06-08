@@ -3,11 +3,6 @@ function header() {
     headerTemplate.innerHTML = `
         <header>
             <img src="assets/images/Logo.png">
-
-            <div class="searchBar">
-                <input type="text" placeholder="Pesquisar..." class="searchInput">
-                <i class="fas fa-search searchBtn"></i>
-            </div>
         </header>
     `
     document.body.appendChild(headerTemplate.content);

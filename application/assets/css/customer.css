@@ -58,6 +58,10 @@
     border-radius: 16px;
 }
 
+.modal-body form{
+    overflow-y: auto;
+}
+
 table{
     border-collapse: separate;
     border-spacing: 0;
@@ -80,4 +84,79 @@ th
 
 tr{
     cursor: pointer;
+}
+
+.sectionTitle{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    border-radius: 20px;
+
+    margin-bottom: 20px;
+
+    background-color: #4365A4;
+    color: white;
+}
+
+.formSection{
+    margin-bottom: 50px;
+}
+
+.formSubSection{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.modal-dialog{
+    max-width: 800px;
+}
+
+.customerCEP{
+    width: 350px;
+}
+
+.customerEstado, .customerCidade, .customerBairro, .customerRua, .customerNumero, .customerComplemento, .customerCPF, .customerPhone
+{
+    width: 350px;
+}
+
+.popover{
+    max-width: 550px;
+}
+
+.popover-body
+{
+    width: 550px;
+}
+
+.popover-body .popoverContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popover-body .popoverBtns{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.popover-body .popoverBtns button{
+    margin-right: 10px;
+}
+
+.popover-body .filterList ul li{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
