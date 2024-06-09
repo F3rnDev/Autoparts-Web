@@ -26,7 +26,11 @@ function sideMenu() {
                 </a>
 
                 <a class="navBtn" href="stock.html" title="Estoque">
-                    <i class="fa-solid fa-dolly"></i>
+                    <i class="fa-solid fa-box-open"></i>
+                </a>
+
+                <a class="navBtn" href="purchase.html" title="Compras">
+                    <i class="fa-solid fa-shopping-cart"></i>
                 </a>
             </div>
 

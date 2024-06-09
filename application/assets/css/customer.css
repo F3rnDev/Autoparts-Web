@@ -58,10 +58,6 @@
     border-radius: 16px;
 }
 
-.modal-body form{
-    overflow-y: auto;
-}
-
 table{
     border-collapse: separate;
     border-spacing: 0;
@@ -159,4 +155,13 @@ tr{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.deleteModalDialog{
+    max-width: 500px;
+}
+
+.deleteHeader{
+    background-color: #dc3545;
+    color: white;
 }
