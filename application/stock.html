@@ -156,8 +156,8 @@
 
                             <tr class="selectedRow" ondblclick="openProdDataScreen('edit')" onclick="selectRow(this, 'single'); setProdButtonsState();">
                                 <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setProdButtonsState();"></td>
-                                <td>123456</td>
-                                <td>Parafuso</td>
+                                <td>32423</td>
+                                <td>teste</td>
                                 <td>Peça</td>
                                 <td>parafuso modelo 25p2</td>
                                 <td> R$35.00 </td>
@@ -190,7 +190,6 @@
                                             <div class="mb-3 productType">
                                                 <label for="productType" class="form-label">Tipo:</label>
                                                 <select class="form-select" id="productType">
-                                                    <option selected hidden disabled>Selecione o tipo</option>
                                                     <option value="peca">Peça</option>
                                                     <option value="acessorio">Acessório</option>
                                                     <option value="ferramenta">Ferramenta</option>
@@ -248,7 +247,7 @@
                             </div>
                         </div>
                     </div>
-                </div>s
+                </div>
             </div>
 
             <!-- Menu inventário -->
@@ -334,16 +333,16 @@
                             <!--Completar com banco de dados-->
                             <tr class="selectedRow" ondblclick="openInvDataScreen('edit')" onclick="selectRow(this, 'single'); setInvButtonState();">
                                 <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setInvButtonState();"></td>
-                                <td>123456</td>
-                                <td>Parafuso</td>
+                                <td>123te456</td>
+                                <td>resd - Parafuso</td>
                                 <td>Joinville - SC</td>
                                 <td>25</td>
                             </tr>
 
                             <tr class="selectedRow" ondblclick="openInvDataScreen('edit')" onclick="selectRow(this, 'single'); setInvButtonState();">
                                 <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setInvButtonState();"></td>
-                                <td>123456</td>
-                                <td>Parafuso</td>
+                                <td>dsa</td>
+                                <td>sd</td>
                                 <td>Joinville - SC</td>
                                 <td>25</td>
                             </tr>
@@ -353,11 +352,11 @@
                 <!---->
                 
                 <!--  Modal dos dados do Inventário -->
-                <div class="modal fade" id="invModal" tabindex="-1" aria-labelledby="invModalLabel" aria-hidden="true">
+                <div class="modal fade invModal" id="invModal" tabindex="-1" aria-labelledby="invModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalTitle">Dados do produto: ID - Nome</h1>
+                                <h1 class="modal-title fs-5" id="invModalTitle">Dados do Inventário: ID - Nome</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
@@ -376,17 +375,19 @@
                                                 <label for="invProd" class="form-label">Produto:</label>
                                                 <input type="text" class="form-control" id="invProd" readonly>
                                             </div>
+                                        </div>
 
+                                        <div class="formSubSection">
                                             <div class="mb-3 invFilial">
                                                 <label for="invFilial" class="form-label">Filial:</label>
                                                 <input type="text" class="form-control" id="invFilial" readonly>
                                             </div>
-                                        </div>
 
-                                        <div class="mb-3">
-                                            <label for="invQtd" class="form-label
-                                            ">Quantidade:</label>
-                                            <input type="text" class="form-control" id="invQtd" readonly>
+                                            <div class="mb-3 invQtd">
+                                                <label for="invQtd" class="form-label
+                                                ">Quantidade:</label>
+                                                <input type="text" class="form-control" id="invQtd" readonly>
+                                            </div>
                                         </div>
                                     </div>
                                     <!---->

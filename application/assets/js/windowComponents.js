@@ -134,3 +134,12 @@ function selectAllRows()
         }
     });
 }
+
+function clearSelection()
+{
+    $('.table tbody tr').removeClass('highlight');
+    $('.table tbody tr').find('.selectCheck').prop('checked', false);
+    $('#allRowsCheck').prop('checked', false);
+
+    selectedRows = [];
+}

@@ -93,7 +93,7 @@ function selectMenu(subMenu)
             break;
     }
 
-    selectedRows = [];
+    clearSelection();
     $('#prodFilterPopover').popover('hide');
     $('#invFilterPopover').popover('hide');
 }
@@ -168,7 +168,7 @@ function updateInvModal(){
     var id = $(cells[1]).text();
     var name = $(cells[2]).text();
 
-    $('#modalTitle').text('Inventário do Produto: ' + id + ' - ' + name);
+    $('#invModalTitle').text('Inventário do Produto: ' + id + ' - ' + name);
 }
 
 //LÓGICA DOS FILTROS (PRODUTO)

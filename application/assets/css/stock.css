@@ -100,3 +100,18 @@
 {
     width: 180px !important;
 }
+
+.invModal .modal-dialog
+{
+    max-width: 500px;
+}
+
+.invID, .invQtd
+{
+    width: 120px;
+}
+
+.invProd, .invFilial
+{
+    width: 330px;
+}
