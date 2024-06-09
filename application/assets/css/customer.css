@@ -1,119 +1,3 @@
-.windowTitle {
-    width: 100%;
-    height: 70px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-
-    background-color: #bed7ff;
-
-    /* put box shadow bellow */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-}
-
-.windowTitle i{
-    margin-right: 10px;
-    font-size: 30px;
-    color: black;
-}
-
-.optionGrp{
-    width: 80%;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    margin-left: 20px;
-
-    margin-top: 40px;
-    margin-bottom: 10px;
-}
-
-.actionBtn{
-    margin-right: 50px;
-}
-
-.optionGrp button, .actionBtn button{
-    width: 110px;
-    height: 40px;
-    font-size: 18px;
-
-    margin-right: 10px;
-
-    border-radius: 10px;
-    border: none;
-}
-
-.actionBtn button i{
-    font-size: 18px;
-}
-
-.modal-header{
-    background-color: #4365A4;
-    color: white;
-}
-
-.modal-content{
-    border-radius: 16px;
-}
-
-table{
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-th
-{
-    position: sticky;
-    top: 0;
-}
-
-.table tbody tr.highlight td {
-    background-color: #E6ECF4;
-}
-
-.table-responsive{
-    max-height:650px;
-    overflow: auto;
-}
-
-tr{
-    cursor: pointer;
-}
-
-.sectionTitle{
-    width: 100%;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-
-    border-radius: 20px;
-
-    margin-bottom: 20px;
-
-    background-color: #4365A4;
-    color: white;
-}
-
-.formSection{
-    margin-bottom: 50px;
-}
-
-.formSubSection{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.modal-dialog{
-    max-width: 800px;
-}
-
 .customerCEP{
     width: 350px;
 }
@@ -121,6 +5,15 @@ tr{
 .customerEstado, .customerCidade, .customerBairro, .customerRua, .customerNumero, .customerComplemento, .customerCPF, .customerPhone
 {
     width: 350px;
+}
+
+.table-responsive{
+    max-height:650px;
+    overflow: auto;
+}
+
+.modal-dialog{
+    max-width: 800px;
 }
 
 .popover{
