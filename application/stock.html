@@ -20,6 +20,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <!--cur screen-->
+    <script src="assets/js/stock.js"></script>
+    <link rel="stylesheet" href="assets/css/stock.css">
 </head>
 <body>
     <script>header();</script>
@@ -30,254 +32,373 @@
         <div class="content">
             <!-- Título -->
             <div class="windowTitle">
-                <i class="fas fa-users"></i>
-                <h2>Clientes</h2>
+                <i class="fa-solid fa-box-open"></i>
+                <h2>Estoque</h2>
             </div>
             <!---->
 
-            <!-- Opções de criação -->
-            <div class="optionGrp">
-                <div class="actionBtn">
-                    <button type="button" class="btn btn-success" id="createBtn" onclick="openDataScreen('add')">
-                        Criar
-                        <i class="fas fa-plus"></i>
+            <!-- Menu de produtos/inventário -->
+            <div class="menuGrp">
+                <div class="menuBtn">
+                    <button type="button" class="btn" id="productsMenuBtn" onclick="selectMenu('productsMenuBtn')">
+                        <i class="fas fa-tools"></i>
+                        Produtos
                     </button>
-
-                    <button type="button" class="btn btn-primary" id="editBtn" onclick="openDataScreen('edit')">
-                        Editar
-                        <i class="fas fa-edit"></i>
-                    </button>
-    
-                    <button type="button" id="removeBtn" class="btn btn-danger" onclick="openRemoveModal()">
-                        Excluir
-                        <i class="fas fa-trash"></i>
+                    <button type="button" class="btn" id="inventoryMenuBtn" onclick="selectMenu('inventoryMenuBtn')">
+                        <i class="fas fa-warehouse"></i>
+                        Inventário
                     </button>
                 </div>
+            </div>
+
+            <!-- Menu produtos -->
+            <div id="prodMenu">
+                <!-- Opções de criação -->
+                <div class="optionGrp">
+                    <div class="actionBtn">
+                        <button type="button" class="btn btn-success" id="createBtn" onclick="openProdDataScreen('add')">
+                            Criar
+                            <i class="fas fa-plus"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-primary" id="editBtn" onclick="openProdDataScreen('edit')">
+                            Editar
+                            <i class="fas fa-edit"></i>
+                        </button>
+        
+                        <button type="button" id="removeBtn" class="btn btn-danger" onclick="openRemoveModal()">
+                            Excluir
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    
+
+                    <div class="searchBar">
+                        <input type="text" placeholder="Pesquisar..." class="searchInput">
+                        <i class="fas fa-search searchBtn"></i>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="prodFilterPopover" data-bs-sanitize="false"  data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom">
+                        Filtros...
+                    </button>
+
+                    <div hidden id="prodPopoverContent">
+                        <div class="prodPopoverContent">
+                            <!-- Tipo de filtro (Opções) -->
+                            <div>
+                                <select class="form-select" id="filterType">
+                                    <option selected hidden disabled>Filtrar por:</option>
+                                    <option value="nome">Nome</option>
+                                    <option value="tipo">Tipo</option>
+                                    <option value="descricao">Descrição</option>
+                                    <option value="valor">Valor</option>
+                                </select>
+                            </div>
+
+                            <!-- sinal (igual, diferente) -->
+                            <div>
+                                <select class="form-select" id="filterOperator">
+                                    <option value="igual">Igual</option>
+                                    <option value="diferente">Diferente</option>
+                                </select>
+                            </div>
+
+                            <!-- Valor -->
+                            <div>
+                                <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                            </div>
+
+                            <!-- Botão Adicionar Filtro -->
+                            <div class="addFilter">
+                                <button type="button" class="btn btn-primary" id="addFilterBtn" onclick="addProdFilter()"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Lista de filtros: Adicionado dinamicamente no código -->
+                        <hr>
+                        <div class="filterList">
+                            <!-- Adicionado dinamicamente  -->
+                        </div>
+                        <hr>
+
+                        <div class="popoverBtns">
+                            <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
+                            <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearProdFilters()">Limpar</button>
+                        </div>
+
+                    </div>
+                </div>
+                <!---->
+
+                <!-- Tabela de Produtos -->
+                <div class="productTable table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light table-bordered">
+                            <tr>
+                                <th scope="col"><input id="allRowsCheck" type="checkbox" onclick="selectAllRows(); setProdButtonsState();"></th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Valor Unitário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--Completar com banco de dados-->
+                            <tr class="selectedRow" ondblclick="openProdDataScreen('edit')" onclick="selectRow(this, 'single'); setProdButtonsState();">
+                                <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setProdButtonsState();"></td>
+                                <td>123456</td>
+                                <td>Parafuso</td>
+                                <td>Peça</td>
+                                <td>parafuso modelo 25p2</td>
+                                <td> R$35.00 </td>
+                            </tr>
+
+                            <tr class="selectedRow" ondblclick="openProdDataScreen('edit')" onclick="selectRow(this, 'single'); setProdButtonsState();">
+                                <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setProdButtonsState();"></td>
+                                <td>123456</td>
+                                <td>Parafuso</td>
+                                <td>Peça</td>
+                                <td>parafuso modelo 25p2</td>
+                                <td> R$35.00 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!---->
                 
+                <!--  Modal dos dados do Produto -->
+                <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalTitle">Dados do produto: ID - Nome</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
 
-                <div class="searchBar">
-                    <input type="text" placeholder="Pesquisar..." class="searchInput">
-                    <i class="fas fa-search searchBtn"></i>
-                </div>
+                            <div class="modal-body">
+                                <form>
+                                    <!-- Dados do produto -->
+                                    <div class="formSection" id="prodData">
 
-                <button type="button" class="btn btn-primary" id="filterPopover" data-bs-sanitize="false"  data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom">
-                    Filtros...
-                </button>
+                                        <div class="formSubSection">
+                                            <div class="mb-3 productID">
+                                                <label for="productID" class="form-label">ID:</label>
+                                                <input type="text" class="form-control" id="productID">
+                                            </div>
 
-                <div hidden id="popoverContent">
-                    <div class="popoverContent">
-                        <!-- Tipo de filtro (Opções) -->
-                        <div>
-                            <select class="form-select" id="filterType">
-                                <option selected hidden disabled>Filtrar por:</option>
-                                <option value="cpf">CPF</option>
-                                <option value="telefone">Telefone</option>
-                                <option value="email">Email</option>
-                                <option value="endereco">Endereço</option>
-                            </select>
-                        </div>
+                                            <div class="mb-3 productType">
+                                                <label for="productType" class="form-label">Tipo:</label>
+                                                <select class="form-select" id="productType">
+                                                    <option selected hidden disabled>Selecione o tipo</option>
+                                                    <option value="peca">Peça</option>
+                                                    <option value="acessorio">Acessório</option>
+                                                    <option value="ferramenta">Ferramenta</option>
+                                                </select>
+                                            </div>
 
-                        <!-- sinal (igual, diferente) -->
-                        <div>
-                            <select class="form-select" id="filterOperator">
-                                <option value="igual">Igual</option>
-                                <option value="diferente">Diferente</option>
-                            </select>
-                        </div>
+                                            <div class="mb-3 productName">
+                                                <label for="productName" class="form-label">Nome:</label>
+                                                <input type="text" class="form-control" id="productName">
+                                            </div>
+                                        </div>
 
-                        <!-- Valor -->
-                        <div>
-                            <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
-                        </div>
-
-                        <!-- Botão Adicionar Filtro -->
-                        <div class="addFilter">
-                            <button type="button" class="btn btn-primary" id="addFilterBtn" onclick="addFilter()"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Lista de filtros: Adicionado dinamicamente no código -->
-                    <hr>
-                    <div class="filterList">
-                        <!-- Adicionado dinamicamente  -->
-                    </div>
-                    <hr>
-
-                    <div class="popoverBtns">
-                        <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
-                        <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearFilters()">Limpar</button>
-                    </div>
-
-                </div>
-            </div>
-            <!---->
-
-            <!-- Tabela de clientes -->
-            <div class="customerTable table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light table-bordered">
-                        <tr>
-                            <th scope="col"><input id="allRowsCheck" type="checkbox" onclick="selectAllRows(); setButtonsState();"></th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Nome</th>
-                            <th scope="col">CPF</th>
-                            <th scope="col">Telefone</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Endereço</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!--Completar com banco de dados-->
-                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setButtonsState();"></td>
-                            <td>123456</td>
-                            <td>João da Silva</td>
-                            <td>123.456.789-00</td>
-                            <td>(11) 99999-9999</td>
-                            <td> joão@gmail.com </td>
-                            <td> Rua das Flores, 123 </td>
-                        </tr>
-                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setButtonsState();"></td>
-                            <td>123456</td>
-                            <td>João da Silva</td>
-                            <td>123.456.789-00</td>
-                            <td>(11) 99999-9999</td>
-                            <td> joão@gmail.com </td>
-                            <td> Rua Gothard Kaesemodel, Anita Garibaldi, Joinville - SC </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!---->
-            
-            <!--  Modal dos dados do cliente -->
-            <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="modalTitle">Dados do cliente: ID - Nome</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            <form>
-                                <!-- Dados gerais -->
-                                <div class="formSection" id="dadosGerais">
-                                    <div class="sectionTitle">
-                                        <h5>Dados gerais:</h5>
-                                    </div>
-
-                                    <div class="mb-3 customerName">
-                                        <label for="customerName" class="form-label">Nome:</label>
-                                        <input type="text" class="form-control" id="customerName">
-                                    </div>
-
-                                    <div class="formSubSection">
                                         <div class="mb-3">
-                                            <label for="customerCPF" class="form-label">CPF:</label>
-                                            <input type="text" class="form-control customerCPF" id="customerCPF">
+                                            <label for="productPrice" class="form-label
+                                            ">Valor Unitário (R$):</label>
+                                            <input type="text" class="form-control" id="productPrice">
                                         </div>
     
                                         <div class="mb-3">
-                                            <label for="customerPhone" class="form-label
-                                            ">Telefone:</label>
-                                            <input type="text" class="form-control customerPhone" id="customerPhone">
+                                            <label for="productDesc" class="form-label
+                                            ">Descrição:</label>
+                                            <!--Big desc input field-->
+                                            <textarea class="form-control" id="productDesc" rows="5"></textarea>
                                         </div>
                                     </div>
-    
-                                    <div class="mb-3">
-                                        <label for="customerEmail" class="form-label
-                                        ">Email:</label>
-                                        <input type="email" class="form-control" id="customerEmail">
-                                    </div>
-                                </div>
-                                <!---->
+                                    <!---->
+                            </div>
 
-                                <!-- Endereço -->
-                                <div class="formSection" id="endereço">
-                                    <div class="sectionTitle">
-                                        <h5>Endereço:</h5>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="customerCEP" class="form-label
-                                        ">CEP:</label>
-                                        <input type="text" class="form-control customerCEP" id="customerCEP" onblur="searchCEP(this.value)">
-                                    </div>
-
-                                    <div class="formSubSection">
-                                        <div class="mb-3">
-                                            <label for="customerEstado" class="form-label
-                                            ">Estado:</label>
-                                            <input type="text" class="form-control customerEstado" id="customerEstado">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="customerCidade" class="form-label
-                                            ">Cidade:</label>
-                                            <input type="text" class="form-control customerCidade" id="customerCidade">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="formSubSection">
-                                        <div class="mb-3">
-                                            <label for="customerBairro" class="form-label
-                                            ">Bairro:</label>
-                                            <input type="text" class="form-control customerBairro" id="customerBairro">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="customerRua" class="form-label
-                                            ">Rua:</label>
-                                            <input type="text" class="form-control customerRua" id="customerRua">
-                                        </div>
-                                    </div>
-
-                                    <div class="formSubSection">
-                                        <div class="mb-3">
-                                            <label for="customerNumero" class="form-label">Numero:</label>
-                                            <input type="text" class="form-control customerNumero" id="customerNumero">
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="customerComplemento" class="form-label">Complemento:</label>
-                                            <input type="text" class="form-control customerComplemento" id="customerComplemento">
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                <!---->
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
-                            <button type="button" class="btn btn-success" id="createCustomer">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button> <!-- Só aparece se for editar um produto -->
+                                <button type="button" class="btn btn-success" id="createProduct">Criar produto</button> <!-- Só aparece se for criar um novo produto -->
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!---->
+
+                <!-- Modal de confirmação de exclusão -->
+                <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered deleteModalDialog">
+                        <div class="modal-content">
+                            <div class="modal-header deleteHeader">
+                                <h1 class="modal-title fs-5" id="removeModalLabel">Excluir produto</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Tem certeza que deseja excluir o(s) produto(s) selecionado(s)?</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" id="removeProduct">Excluir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>s
             </div>
-            <!---->
 
-            <!-- Modal de confirmação de exclusão -->
-            <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered deleteModalDialog">
-                    <div class="modal-content">
-                        <div class="modal-header deleteHeader">
-                            <h1 class="modal-title fs-5" id="removeModalLabel">Excluir cliente</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Menu inventário -->
+            <div id="invMenu">
+                <!-- Opções de criação -->
+                <div class="optionGrp">
+                    <div class="actionBtn">
+                        <button type="button" class="btn btn-secondary viewBtn" id="viewBtn" onclick="openInvDataScreen()">
+                            Visualizar Dados 
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+
+                    <div class="searchBar">
+                        <input type="text" placeholder="Pesquisar..." class="searchInput">
+                        <i class="fas fa-search searchBtn"></i>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="invFilterPopover" data-bs-sanitize="false"  data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom">
+                        Filtros...
+                    </button>
+
+                    <div hidden id="invPopoverContent">
+                        <div class="invPopoverContent">
+                            <!-- Tipo de filtro (Opções) -->
+                            <div>
+                                <select class="form-select" id="filterType">
+                                    <option selected hidden disabled>Filtrar por:</option>
+                                    <option value="id do produto">Id do produto</option>
+                                    <option value="filial">Filial</option>
+                                    <option value="quantidade">Quantidade</option>
+                                </select>
+                            </div>
+
+                            <!-- sinal (igual, diferente) -->
+                            <div>
+                                <select class="form-select" id="filterOperator">
+                                    <option value="igual">Igual</option>
+                                    <option value="diferente">Diferente</option>
+                                </select>
+                            </div>
+
+                            <!-- Valor -->
+                            <div>
+                                <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                            </div>
+
+                            <!-- Botão Adicionar Filtro -->
+                            <div class="addFilter">
+                                <button type="button" class="btn btn-primary" id="addFilterBtn" onclick="addInvFilter()"><i class="fas fa-plus"></i></button>
+                            </div>
                         </div>
 
-                        <div class="modal-body">
-                            <p>Tem certeza que deseja excluir o(s) cliente(s) selecionado(s)?</p>
+                        <!-- Lista de filtros: Adicionado dinamicamente no código -->
+                        <hr>
+                        <div class="filterList">
+                            <!-- Adicionado dinamicamente  -->
+                        </div>
+                        <hr>
+
+                        <div class="popoverBtns">
+                            <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
+                            <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearInvFilters()">Limpar</button>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger" id="removeCustomer">Excluir</button>
-                        </div>
+                    </div>
                 </div>
+                <!---->
+
+                <!-- Tabela de Inventário -->
+                <div class="invTable table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light table-bordered">
+                            <tr>
+                                <th scope="col"><input id="allRowsCheck" type="checkbox" onclick="selectAllRows(); setInvButtonState();"></th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Produto</th>
+                                <th scope="col">Filial</th>
+                                <th scope="col">Quantidade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!--Completar com banco de dados-->
+                            <tr class="selectedRow" ondblclick="openInvDataScreen('edit')" onclick="selectRow(this, 'single'); setInvButtonState();">
+                                <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setInvButtonState();"></td>
+                                <td>123456</td>
+                                <td>Parafuso</td>
+                                <td>Joinville - SC</td>
+                                <td>25</td>
+                            </tr>
+
+                            <tr class="selectedRow" ondblclick="openInvDataScreen('edit')" onclick="selectRow(this, 'single'); setInvButtonState();">
+                                <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setInvButtonState();"></td>
+                                <td>123456</td>
+                                <td>Parafuso</td>
+                                <td>Joinville - SC</td>
+                                <td>25</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!---->
+                
+                <!--  Modal dos dados do Inventário -->
+                <div class="modal fade" id="invModal" tabindex="-1" aria-labelledby="invModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modalTitle">Dados do produto: ID - Nome</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <form>
+                                    <!-- Dados do produto Não é possivel editar estes dados -->
+                                    <div class="formSection" id="prodData">
+
+                                        <div class="formSubSection">
+                                            <div class="mb-3 invID">
+                                                <label for="invID" class="form-label">ID:</label>
+                                                <input type="text" class="form-control" id="invID" readonly>
+                                            </div>
+
+                                            <div class="mb-3 invProd">
+                                                <label for="invProd" class="form-label">Produto:</label>
+                                                <input type="text" class="form-control" id="invProd" readonly>
+                                            </div>
+
+                                            <div class="mb-3 invFilial">
+                                                <label for="invFilial" class="form-label">Filial:</label>
+                                                <input type="text" class="form-control" id="invFilial" readonly>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="invQtd" class="form-label
+                                            ">Quantidade:</label>
+                                            <input type="text" class="form-control" id="invQtd" readonly>
+                                        </div>
+                                    </div>
+                                    <!---->
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---->
             </div>
 
         </div>

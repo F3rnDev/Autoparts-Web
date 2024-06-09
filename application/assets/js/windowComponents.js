@@ -8,12 +8,14 @@ function header() {
     document.body.appendChild(headerTemplate.content);
 }
 
+var curMenu = null;
+
 function sideMenu() {
     const sideMenuTemplate = document.createElement('template');
     sideMenuTemplate.innerHTML = `
         <aside>
             <div class="section">
-                <a class="navBtn" href="home.html" title="Home">
+                <a class="navBtn" href="home.html" title="Home" link="home.html">
                     <i class="fa-solid fa-house"></i>
                 </a>
 
@@ -21,21 +23,21 @@ function sideMenu() {
                     <i class="fas fa-users"></i>
                 </a>
 
-                <a class="navBtn" href="ticket.html" title="OS (Ordem de Serviço)">
+                <a class="navBtn" href="ticket.html" title="OS (Ordem de Serviço)" link="ticket.html">
                     <i class="fa-solid fa-ticket"></i>
                 </a>
 
-                <a class="navBtn" href="stock.html" title="Estoque">
+                <a class="navBtn" href="stock.html" title="Estoque" link="stock.html">
                     <i class="fa-solid fa-box-open"></i>
                 </a>
 
-                <a class="navBtn" href="purchase.html" title="Compras">
+                <a class="navBtn" href="purchase.html" title="Compras" link="purchase.html">
                     <i class="fa-solid fa-shopping-cart"></i>
                 </a>
             </div>
 
             <div class="section">
-                <div class="navBtn" href="user.html" title="Usuário">
+                <div class="navBtn" href="user.html" title="Usuário" link="user.html">
                     <i class="fas fa-user"></i>
                 </div>
 
@@ -46,11 +48,22 @@ function sideMenu() {
         </aside>
     `
     document.getElementById('screen').appendChild(sideMenuTemplate.content);
+
+    setActiveMenu();
+}
+
+//get cur page and set respective sidemenu button to active
+function setActiveMenu() {
+    const url = window.location.pathname;
+    const page = url.substring(url.lastIndexOf('/') + 1);
+
+    const menu = document.querySelector(`[link="${page}"]`);
+    menu.classList.add('active');
+    curMenu = menu;
 }
 
 //LOGICA DA TELA
 var selectedRows = [];
-const filters = [];
 
 //LÓGICA DA SELEÇÃO NA TABELA
 function selectRow(row, type)
@@ -120,63 +133,4 @@ function selectAllRows()
             selectedRows.push(this);
         }
     });
-}
-
-//LÓGICA DOS FILTROS
-function addFilter()
-{
-    var filter = {
-        id: filters.length,
-        type: $('#filterType').val(),
-        operator: $('#filterOperator').val(),
-        value: $('#filterValue').val()
-    }
-
-    if (filters.find(f => f.type == filter.type && f.value == filter.value)) {
-        alert("Filtro já adicionado");
-        return;
-    }
-
-    filters.push(filter);
-
-    setFilterList();
-}
-
-function setFilterList()
-{  
-    var obj = document.querySelector('.filterList');
-    obj.innerHTML = '';
-
-
-    filters.forEach(filter =>{
-
-        var operator = "a";
-        if (filter.operator == "diferente") {
-            operator = "de";
-        }
-
-        var html = ` 
-            <ul class="list-group">
-                    <li class="list-group-item">
-                        ${filter.type.toUpperCase()} ${filter.operator} ${operator} ${filter.value.toUpperCase()}
-                        <button type="button" class="btn btn-danger" id="removeFilterBtn" onclick="removeFilter(${filter.id})"><i class="fas fa-times"></i></button>
-                    </li>
-            </ul>
-        `;
-
-        obj.innerHTML += html;
-    });
-
-}
-
-function removeFilter(id)
-{
-    filters.splice(filters.findIndex(f => f.id == id), 1);
-    setFilterList();
-}
-
-function clearFilters()
-{
-    filters.splice(0, filters.length);
-    setFilterList();
 }

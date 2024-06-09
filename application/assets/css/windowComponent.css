@@ -89,6 +89,12 @@ aside{
     transition: background-color 0.3s, border-right 0.3s;
 }
 
+
+.active{
+    background-color: var(--second-color);
+    border-right-color: var(--main-color);
+}
+
 .navBtn i{
    font-size: 1.875rem;
    color: var(--main-color);

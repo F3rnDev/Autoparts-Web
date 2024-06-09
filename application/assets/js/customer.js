@@ -136,3 +136,63 @@ function clearAddressFields(){
     $('#customerEstado').val('');
     $('#customerRua').val('');
 }
+
+//LÓGICA DOS FILTROS
+const filters = [];
+function addFilter()
+{
+    var filter = {
+        id: filters.length,
+        type: $('#filterType').val(),
+        operator: $('#filterOperator').val(),
+        value: $('#filterValue').val()
+    }
+
+    if (filters.find(f => f.type == filter.type && f.value == filter.value)) {
+        alert("Filtro já adicionado");
+        return;
+    }
+
+    filters.push(filter);
+
+    setFilterList();
+}
+
+function setFilterList()
+{  
+    var obj = document.querySelector('.filterList');
+    obj.innerHTML = '';
+
+
+    filters.forEach(filter =>{
+
+        var operator = "a";
+        if (filter.operator == "diferente") {
+            operator = "de";
+        }
+
+        var html = ` 
+            <ul class="list-group">
+                    <li class="list-group-item">
+                        ${filter.type.toUpperCase()} ${filter.operator} ${operator} ${filter.value.toUpperCase()}
+                        <button type="button" class="btn btn-danger" id="removeFilterBtn" onclick="removeFilter(${filter.id})"><i class="fas fa-times"></i></button>
+                    </li>
+            </ul>
+        `;
+
+        obj.innerHTML += html;
+    });
+
+}
+
+function removeFilter(id)
+{
+    filters.splice(filters.findIndex(f => f.id == id), 1);
+    setFilterList();
+}
+
+function clearFilters()
+{
+    filters.splice(0, filters.length);
+    setFilterList();
+}
