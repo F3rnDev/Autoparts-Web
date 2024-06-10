@@ -68,6 +68,12 @@ var selectedRows = [];
 //LÓGICA DA SELEÇÃO NA TABELA
 function selectRow(row, type)
 {
+    //Se o elemento clicado for uma carta do kanban na coluna x e o selectedRows tiver uma carta na coluna y, deselecionar todas as cartas
+    if ($(row).hasClass('kanbanCard') && selectedRows.length > 0 && $(row).closest('.kanbanColumn').attr('id') != $(selectedRows[0]).closest('.kanbanColumn').attr('id'))
+    {
+        clearSelection();
+    }
+
     switch(type){
         case 'single':
             selectSingleRow(row);
@@ -87,9 +93,15 @@ function selectRow(row, type)
 
 function selectSingleRow(row)
 {
+    var curClass = '';
+    if ($(row).hasClass('kanbanCard')) 
+    {
+        curClass = '.kanbanCardTitle .form-check ';
+    }
+
     $(row).addClass('highlight').siblings().removeClass('highlight');
-    $(row).siblings().find('.selectCheck').prop('checked', false);
-    $(row).find('.selectCheck').prop('checked', true);
+    $(row).siblings().find(curClass + '.selectCheck').prop('checked', false);
+    $(row).find(curClass + '.selectCheck').prop('checked', true);
 
     selectedRows = [];
     selectedRows.push(row);
@@ -97,16 +109,22 @@ function selectSingleRow(row)
 
 function selectMultiRow(row)
 {
+    var curClass = '';
+    if ($(row).hasClass('kanbanCard')) 
+    {
+        curClass = '.kanbanCardTitle .form-check ';
+    }
+
     if($(row).hasClass('highlight'))
     {
         $(row).removeClass('highlight');
         selectedRows.splice(selectedRows.indexOf(row), 1);
-        $(row).find('.selectCheck').prop('checked', false);
+        $(row).find(curClass + '.selectCheck').prop('checked', false);
         return;
     }
 
     $(row).addClass('highlight');
-    $(row).find('.selectCheck').prop('checked', true);
+    $(row).find(curClass + '.selectCheck').prop('checked', true);
     selectedRows.push(row);
 }
 
@@ -137,8 +155,16 @@ function selectAllRows()
 
 function clearSelection()
 {
-    $('.table tbody tr').removeClass('highlight');
-    $('.table tbody tr').find('.selectCheck').prop('checked', false);
+    var curRowClass = '.table tbody tr';
+    var curClass = '.selectCheck';
+    if ($(selectedRows[0]).hasClass('kanbanCard')) 
+    {
+        curRowClass = '.kanbanCard';
+        curClass = '.kanbanCardTitle .form-check .selectCheck';
+    }
+
+    $(curRowClass).removeClass('highlight');
+    $(curRowClass).find(curClass).prop('checked', false);
     $('#allRowsCheck').prop('checked', false);
 
     selectedRows = [];

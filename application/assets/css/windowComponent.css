@@ -184,7 +184,11 @@ th
     top: 0;
 }
 
-.table tbody tr.highlight td {
+.table tbody tr.highlight td{
+    background-color: #E6ECF4;
+}
+
+.kanbanCard.highlight{
     background-color: #E6ECF4;
 }
 

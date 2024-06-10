@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoParts</title>
+
+    <!--components-->
+    <script src="assets/js/windowComponents.js"></script>
+    <link rel="stylesheet" href="assets/css/windowComponent.css">
+
+    <!--icons-->
+    <script src="https://kit.fontawesome.com/68078e62e6.js" crossorigin="anonymous"></script>
+
+    <!--bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!--jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--cur screen-->
+    <script src="assets/js/ticket.js"></script>
+    <link rel="stylesheet" href="assets/css/ticket.css">
+</head>
+<body>
+    <script>header();</script>
+
+    <div class="screen" id="screen">
+        <script>sideMenu();</script>
+
+        <div class="content">
+            <!-- Título -->
+            <div class="windowTitle">
+                <i class="fa-solid fa-ticket"></i>
+                <h2>OS (Ordem de serviço)</h2>
+            </div>
+            <!---->
+
+            <!-- Opções de criação -->
+            <div class="optionGrp">
+                <div class="actionBtn">
+                    <button type="button" class="btn btn-success" id="createBtn">
+                        Criar
+                        <i class="fas fa-plus"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="executeBtn">
+                        Executar
+                        <i class="fas fa-play"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-secondary viewBtn" id="viewBtn">
+                        Visualizar Dados
+                        <i class="fas fa-eye"></i>
+                    </button>
+    
+                    <button type="button" id="removeBtn" class="btn btn-danger">
+                        Excluir
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                
+
+                <div class="searchBar">
+                    <input type="text" placeholder="Pesquisar..." class="searchInput">
+                    <i class="fas fa-search searchBtn"></i>
+                </div>
+
+                <button type="button" class="btn btn-primary" id="filterPopover" data-bs-sanitize="false"  data-bs-html="true" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="bottom">
+                    Filtros...
+                </button>
+
+                <div hidden id="popoverContent">
+                    <div class="popoverContent">
+                        <!-- Tipo de filtro (Opções) -->
+                        <div>
+                            <select class="form-select" id="filterType">
+                                <option selected hidden disabled>Filtrar por:</option>
+                                <option value="cpf">CPF</option>
+                                <option value="telefone">Telefone</option>
+                                <option value="email">Email</option>
+                                <option value="endereco">Endereço</option>
+                            </select>
+                        </div>
+
+                        <!-- sinal (igual, diferente) -->
+                        <div>
+                            <select class="form-select" id="filterOperator">
+                                <option value="igual">Igual</option>
+                                <option value="diferente">Diferente</option>
+                            </select>
+                        </div>
+
+                        <!-- Valor -->
+                        <div>
+                            <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                        </div>
+
+                        <!-- Botão Adicionar Filtro -->
+                        <div class="addFilter">
+                            <button type="button" class="btn btn-primary" id="addFilterBtn" onclick="addFilter()"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de filtros: Adicionado dinamicamente no código -->
+                    <hr>
+                    <div class="filterList">
+                        <!-- Adicionado dinamicamente  -->
+                    </div>
+                    <hr>
+
+                    <div class="popoverBtns">
+                        <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
+                        <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearFilters()">Limpar</button>
+                    </div>
+
+                </div>
+            </div>
+            <!---->
+
+            <!-- Listagem ordem de serviço (Kanban) -->
+            <div class="kanban">
+                <div class="kanbanColumn progress" id="progress">
+                    <div class="kanbanColumnTitle">
+                        <h3>Em andamento</h3>
+                    </div>
+
+                    <div class="kanbanColumnContent">
+                        <!--cards do kanban. Deve ser dinamico com o database-->
+                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
+                            <div class="kanbanCardTitle kanbanCardSection">
+                                <h5>ID: 0001</h5>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
+                                </div>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Tipo de Serviço: Troca de Peça</h5>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Data de Inicio: 10/10/2024</h5>
+                            </div>
+
+                            <br>
+
+                            <div class="kanbanCardSection">
+                                <h5>Valor do Serviço: R$45,00</h5>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+
+                <!--left arrow-->
+                <div class="kanbanColumn arrowCol">
+                    <div class="kanbanColumnTitle">
+                        <div class="arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kanbanColumn done" id="done">
+                    <div class="kanbanColumnTitle">
+                        <h3>Concluído</h3>
+                    </div>
+
+                    <div class="kanbanColumnContent">
+                        <!--cards do kanban. Deve ser dinamico com o database-->
+                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
+                            <div class="kanbanCardTitle kanbanCardSection">
+                                <h5>ID: 0001</h5>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
+                                </div>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Tipo de Serviço: Troca de Peça</h5>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Data de Inicio: 10/10/2024</h5>
+                            </div>
+
+                            <br>
+
+                            <div class="kanbanCardSection">
+                                <h5>Valor do Serviço: R$45,00</h5>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+
+                <div class="kanbanColumn cancelled" id="cancelled">
+                    <div class="kanbanColumnTitle">
+                        <h3>Cancelado</h3>
+                    </div>
+
+                    <div class="kanbanColumnContent">
+                        <!--cards do kanban. Deve ser dinamico com o database-->
+                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
+                            <div class="kanbanCardTitle kanbanCardSection">
+                                <h5>ID: 0001</h5>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
+                                </div>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Tipo de Serviço: Troca de Peça</h5>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Data de Inicio: 10/10/2024</h5>
+                            </div>
+
+                            <br>
+
+                            <div class="kanbanCardSection">
+                                <h5>Valor do Serviço: R$45,00</h5>
+                            </div>
+                        </div> 
+                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
+                            <div class="kanbanCardTitle kanbanCardSection">
+                                <h5>ID: 0001</h5>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
+                                </div>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Tipo de Serviço: Troca de Peça</h5>
+                            </div>
+
+                            <div class="kanbanCardSection">
+                                <h5>Data de Inicio: 10/10/2024</h5>
+                            </div>
+
+                            <br>
+
+                            <div class="kanbanCardSection">
+                                <h5>Valor do Serviço: R$45,00</h5>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            
+            <!--  Modal dos dados do cliente -->
+            <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="modalTitle">Dados do cliente: ID - Nome</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <form>
+                                <!-- Dados gerais -->
+                                <div class="formSection" id="dadosGerais">
+                                    <div class="sectionTitle">
+                                        <h5>Dados gerais:</h5>
+                                    </div>
+
+                                    <div class="mb-3 customerName">
+                                        <label for="customerName" class="form-label">Nome:</label>
+                                        <input type="text" class="form-control" id="customerName">
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerCPF" class="form-label">CPF:</label>
+                                            <input type="text" class="form-control customerCPF" id="customerCPF">
+                                        </div>
+    
+                                        <div class="mb-3">
+                                            <label for="customerPhone" class="form-label
+                                            ">Telefone:</label>
+                                            <input type="text" class="form-control customerPhone" id="customerPhone">
+                                        </div>
+                                    </div>
+    
+                                    <div class="mb-3">
+                                        <label for="customerEmail" class="form-label
+                                        ">Email:</label>
+                                        <input type="email" class="form-control" id="customerEmail">
+                                    </div>
+                                </div>
+                                <!---->
+
+                                <!-- Endereço -->
+                                <div class="formSection" id="endereço">
+                                    <div class="sectionTitle">
+                                        <h5>Endereço:</h5>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="customerCEP" class="form-label
+                                        ">CEP:</label>
+                                        <input type="text" class="form-control customerCEP" id="customerCEP" onblur="searchCEP(this.value)">
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerEstado" class="form-label
+                                            ">Estado:</label>
+                                            <input type="text" class="form-control customerEstado" id="customerEstado">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="customerCidade" class="form-label
+                                            ">Cidade:</label>
+                                            <input type="text" class="form-control customerCidade" id="customerCidade">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerBairro" class="form-label
+                                            ">Bairro:</label>
+                                            <input type="text" class="form-control customerBairro" id="customerBairro">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="customerRua" class="form-label
+                                            ">Rua:</label>
+                                            <input type="text" class="form-control customerRua" id="customerRua">
+                                        </div>
+                                    </div>
+
+                                    <div class="formSubSection">
+                                        <div class="mb-3">
+                                            <label for="customerNumero" class="form-label">Numero:</label>
+                                            <input type="text" class="form-control customerNumero" id="customerNumero">
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="customerComplemento" class="form-label">Complemento:</label>
+                                            <input type="text" class="form-control customerComplemento" id="customerComplemento">
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <!---->
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
+                            <button type="button" class="btn btn-success" id="createCustomer">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+
+            <!-- Modal de confirmação de exclusão -->
+            <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered deleteModalDialog">
+                    <div class="modal-content">
+                        <div class="modal-header deleteHeader">
+                            <h1 class="modal-title fs-5" id="removeModalLabel">Excluir cliente</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p>Tem certeza que deseja excluir o(s) cliente(s) selecionado(s)?</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="removeCustomer">Excluir</button>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+</body>
