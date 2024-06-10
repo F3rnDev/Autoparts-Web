@@ -96,7 +96,21 @@
     color: white;
 }
 
+.requestModalDialog{
+    max-width: 500px;
+}
+
+.requestHeader{
+    background-color: #ffc107;
+    color: black;
+}
+
 .viewBtn
+{
+    width: 180px !important;
+}
+
+.requestBtn
 {
     width: 180px !important;
 }

@@ -259,6 +259,12 @@
                             Visualizar Dados 
                             <i class="fas fa-eye"></i>
                         </button>
+
+                        <!--Solicitar Baixa no Estoque-->
+                        <button type="button" class="btn btn-warning requestBtn" id="requestBtn" onclick="openRequestModal()">
+                            Solicitar Baixa
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
                     </div>
 
                     <div class="searchBar">
@@ -395,6 +401,48 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal de solicitar baixa -->
+                <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered requestModalDialog">
+                        <div class="modal-content">
+                            <div class="modal-header requestHeader">
+                                <h1 class="modal-title fs-5" id="requestModalLabel">Solicitar baixa</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <!--Quantidade atual/quanto deve ser alterado-->
+                                <div class="formSubSection">
+                                    <div class="mb-3">
+                                        <label for="invCurQtd" class="form-label
+                                        ">Quantidade Total:</label>
+                                        <input type="text" class="form-control" id="invCurQtd" readonly>
+                                    </div>
+    
+                                    <div class="mb-3">
+                                        <label for="invQtd" class="form-label
+                                        ">Quantidade a ser retirada:</label>
+                                        <input type="number" min="1" value="1" class="form-control" id="invQtd">
+                                    </div>
+                                </div>
+
+                                <!--Motivo da baixa-->
+                                <div class="mb-3">
+                                    <label for="invReason" class="form-label
+                                    ">Motivo:</label>
+                                    <textarea class="form-control" id="invReason" rows="5" placeholder="Motivo da baixa"></textarea>
+                                </div>
+                                
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-warning" id="requestProduct">Solicitar Baixa</button>
                             </div>
                         </div>
                     </div>

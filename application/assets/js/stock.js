@@ -68,10 +68,12 @@ function setInvButtonState()
 {
     if(selectedRows.length == 1){
         $('#viewBtn').prop('disabled', false);
+        $('#requestBtn').prop('disabled', false);
     }
     else
     {
         $('#viewBtn').prop('disabled', true);
+        $('#requestBtn').prop('disabled', true);
     }
 }
 
@@ -289,6 +291,12 @@ function clearInvFilters()
 {
     filterInv.splice(0, filterInv.length);
     setInvFilterList();
+}
+
+//SOLICITAR BAIXA DE ESTOQUE
+function openRequestModal(){
+    $('#requestModal').modal('show');
+    $('#invFilterPopover').popover('hide');
 }
 
 
