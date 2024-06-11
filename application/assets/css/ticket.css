@@ -122,6 +122,102 @@
     width: 180px !important;
 }
 
+.valueGrp
+{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.valueGrp h5
+{
+    margin-right: 10px;
+}
+
+.value
+{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.value input
+{
+    width: 500px;
+}
+
+.totalValue
+{
+    vertical-align: bottom;
+}
+
+.selectControl
+{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.ticketStatus
+{
+    width: 200px;
+}
+
+.selectEmployee, .selectCustomer, .qtdProd, .selectProduct
+{
+    border: 1px solid #ced4da !important;
+    border-radius: 5px !important;
+}
+
+.selectEmployee, .selectCustomer, .ticketDate, .ticketEndDate
+{
+    width: 360px !important;
+}
+
+.qtdProd, .selectProduct
+{
+    width: 300px !important;
+}
+
+.addProduct, .editProduct, .removeProduct
+{
+    position: relative;
+    top: 8px;
+}
+
+.insideSecUp
+{
+    margin-top: 50px;
+}
+
+.insideSecDown
+{
+    margin-bottom: 20px;
+}
+
+.setProd
+{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.bootstrap-select .dropdown-toggle
+{
+    background-color: white !important;
+}
+
+.formSubSection
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.valueTitle
+{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .table-responsive{
     max-height:650px;
     overflow: auto;

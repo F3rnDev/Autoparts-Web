@@ -82,7 +82,8 @@ function selectRow(row, type)
             selectMultiRow(row);
             break;
     }
-
+    
+    //apenas checar se todos os itens da tabela estão selecionados se o elemento clicado não for uma carta do kanban
     if(selectedRows.length == $('.table tbody tr').length){
         $('#allRowsCheck').prop('checked', true);
     }
