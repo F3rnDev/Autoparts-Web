@@ -22,6 +22,9 @@
     <!--cur screen-->
     <link rel="stylesheet" href="assets/css/customer.css">
     <script src="assets/js/customer.js"></script>
+
+    <!--custom plugins-->
+    <script src="https://unpkg.com/imask"></script>
 </head>
 <body>
     <script>header();</script>
@@ -58,7 +61,7 @@
                 
 
                 <div class="searchBar">
-                    <input type="text" placeholder="Pesquisar..." class="searchInput">
+                    <input type="text" placeholder="Pesquisar..." class="searchInput" id="searchBarInput">
                     <i class="fas fa-search searchBtn"></i>
                 </div>
 
@@ -66,16 +69,21 @@
                     Filtros...
                 </button>
 
+                <!--Botão Pesquisar-->
+                <button type="button" class="btn btn-primary searchConfirm" id="searchBtn" onclick="updateTableInfo()">
+                    Pesquisar
+                </button>
+
                 <div hidden id="popoverContent">
                     <div class="popoverContent">
                         <!-- Tipo de filtro (Opções) -->
                         <div>
-                            <select class="form-select" id="filterType">
+                            <select class="form-select" id="filterType" onchange="setFilterValueInput()">
                                 <option selected hidden disabled>Filtrar por:</option>
                                 <option value="cpf">CPF</option>
                                 <option value="telefone">Telefone</option>
                                 <option value="email">Email</option>
-                                <option value="endereco">Endereço</option>
+                                <option value="cep">CEP</option>
                             </select>
                         </div>
 
@@ -89,7 +97,11 @@
 
                         <!-- Valor -->
                         <div>
-                            <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                            <!-- Diferente tipos de valor (CPF, Telefone, Email, CEP) -->
+                            <input type="text" class="form-control" id="filterValueCPF" placeholder="Valor:">
+                            <input type="text" hidden class="form-control" id="filterValueEmail" placeholder="Valor:">
+                            <input type="text" hidden class="form-control" id="filterValueTelefone" placeholder="Valor:">
+                            <input type="text" hidden class="form-control" id="filterValueCEP" placeholder="Valor:">
                         </div>
 
                         <!-- Botão Adicionar Filtro -->
@@ -106,7 +118,6 @@
                     <hr>
 
                     <div class="popoverBtns">
-                        <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
                         <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearFilters()">Limpar</button>
                     </div>
 
@@ -128,26 +139,8 @@
                             <th scope="col">Endereço</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tableInfo">
                         <!--Completar com banco de dados-->
-                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setButtonsState();"></td>
-                            <td>123456</td>
-                            <td>João da Silva</td>
-                            <td>123.456.789-00</td>
-                            <td>(11) 99999-9999</td>
-                            <td> joão@gmail.com </td>
-                            <td> Rua das Flores, 123 </td>
-                        </tr>
-                        <tr class="selectedRow" ondblclick="openDataScreen('edit')" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <td><input class="selectCheck" type="checkbox" onclick="selectRow(this.closest('tr'), 'multi'); event.stopPropagation(); setButtonsState();"></td>
-                            <td>123456</td>
-                            <td>João da Silva</td>
-                            <td>123.456.789-00</td>
-                            <td>(11) 99999-9999</td>
-                            <td> joão@gmail.com </td>
-                            <td> Rua Gothard Kaesemodel, Anita Garibaldi, Joinville - SC </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -166,6 +159,7 @@
                             <form>
                                 <!-- Dados gerais -->
                                 <div class="formSection" id="dadosGerais">
+                                    <input type="hidden" id="customerID">
                                     <div class="sectionTitle">
                                         <h5>Dados gerais:</h5>
                                     </div>
@@ -212,13 +206,13 @@
                                         <div class="mb-3">
                                             <label for="customerEstado" class="form-label
                                             ">Estado:</label>
-                                            <input type="text" class="form-control customerEstado" id="customerEstado">
+                                            <input type="text" class="form-control customerEstado" id="customerEstado" readonly>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="customerCidade" class="form-label
                                             ">Cidade:</label>
-                                            <input type="text" class="form-control customerCidade" id="customerCidade">
+                                            <input type="text" class="form-control customerCidade" id="customerCidade" readonly>
                                         </div>
                                     </div>
                                     
@@ -226,13 +220,13 @@
                                         <div class="mb-3">
                                             <label for="customerBairro" class="form-label
                                             ">Bairro:</label>
-                                            <input type="text" class="form-control customerBairro" id="customerBairro">
+                                            <input type="text" class="form-control customerBairro" id="customerBairro" readonly>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="customerRua" class="form-label
                                             ">Rua:</label>
-                                            <input type="text" class="form-control customerRua" id="customerRua">
+                                            <input type="text" class="form-control customerRua" id="customerRua" readonly>
                                         </div>
                                     </div>
 
@@ -254,8 +248,8 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
-                            <button type="button" class="btn btn-success" id="createCustomer">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
+                            <button type="button" class="btn btn-primary" id="saveChanges" onclick="editCustomer()">Salvar alterações</button> <!-- Só aparece se for editar um cliente -->
+                            <button type="button" class="btn btn-success" id="createCustomer" onclick="addNewCustomer()">Criar cliente</button> <!-- Só aparece se for criar um novo cliente -->
                         </div>
                     </div>
                 </div>
@@ -277,7 +271,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger" id="removeCustomer">Excluir</button>
+                            <button type="button" class="btn btn-danger" id="removeCustomer" onclick="deleteCustomer()">Excluir</button>
                         </div>
                 </div>
             </div>
