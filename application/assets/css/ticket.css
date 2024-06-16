@@ -162,10 +162,15 @@
     width: 200px;
 }
 
-.selectEmployee, .selectCustomer, .qtdProd, .selectProduct
+.selectEmployee, .selectCustomer, .qtdProd, .selectProduct, .selectClientFilter, .selectEmployeeFilter
 {
     border: 1px solid #ced4da !important;
     border-radius: 5px !important;
+}
+
+.selectClientFilter, .dateFilterValue, .disabledFilterValue, .selectEmployeeFilter
+{
+    width: 200px !important;
 }
 
 .selectEmployee, .selectCustomer, .ticketDate, .ticketEndDate

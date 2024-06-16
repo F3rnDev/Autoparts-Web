@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function(){
     setButtonsState();
     updateTableInfo();
+    setFilterValueField();
 
     var popupData = document.querySelector('#popoverContent').innerHTML;
     document.querySelector('#popoverContent').remove();
@@ -24,6 +25,97 @@ document.addEventListener('DOMContentLoaded', function(){
 $(function() {
     $('.selectpicker').selectpicker();
 });
+
+function setFilterValueField()
+{
+    var value = document.getElementById('filterType').value;
+
+    if(value == 'dataInicio' || value == 'dataFim')
+    {
+        document.getElementById('disabledInputFilter').hidden = true;
+        document.getElementById('filterValueFieldCustomer').hidden = true;
+        document.getElementById('filterValueFieldEmployee').hidden = true;
+        document.getElementById('dateFilterValue').hidden = false;
+    }	
+    else if (value == 'clientID')
+    {
+        document.getElementById('disabledInputFilter').hidden = true;
+        document.getElementById('filterValueFieldCustomer').hidden = false;
+        document.getElementById('filterValueFieldEmployee').hidden = true;
+        document.getElementById('dateFilterValue').hidden = true;
+        fillCustomerFilter();
+    }
+    else if (value == 'funcID')
+    {
+        document.getElementById('disabledInputFilter').hidden = true;
+        document.getElementById('filterValueFieldCustomer').hidden = true;
+        document.getElementById('filterValueFieldEmployee').hidden = false;
+        document.getElementById('dateFilterValue').hidden = true;
+        fillEmployeeFilter();
+    }
+    else
+    {
+        document.getElementById('disabledInputFilter').hidden = false;
+        document.getElementById('filterValueFieldCustomer').hidden = true;
+        document.getElementById('filterValueFieldEmployee').hidden = true;
+        document.getElementById('dateFilterValue').hidden = true;
+    }
+}
+
+function fillCustomerFilter()
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/customer/getCustomerTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var select = document.querySelector('#filterValueFieldCustomer select');
+        select.innerHTML = '';
+
+        data.forEach(customer => {
+            var option = document.createElement('option');
+            option.value = customer.ID;
+            option.text = customer.ID + " - " + customer.nome;
+            select.add(option);
+        });
+
+        $('.selectClientFilter').selectpicker('refresh');
+    });
+}
+
+function fillEmployeeFilter()
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/employee/getEmployeeTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var select = document.querySelector('#filterValueFieldEmployee select');
+        select.innerHTML = '';
+
+        data.forEach(employee => {
+            var option = document.createElement('option');
+            option.value = employee.ID;
+            option.text = employee.ID + " - " + employee.nome;
+            select.add(option);
+        });
+
+        $('.selectEmployeeFilter').selectpicker('refresh');
+    });
+
+}
 
 function setModalFieldMask(serviceValue)
 {
@@ -499,11 +591,30 @@ const filters = [];
 
 function addFilter()
 {
+    var value = '';
+    var type = $('#filterType').val();
+
+    if (type == 'dataInicio' || type == 'dataFim') {
+        value = $('#dateFilterValue').val();
+    }
+    else if (type == 'clientID') {
+        value = $('#filterValueFieldCustomer select').val();
+    }
+    else if (type == 'funcID') {
+        value = $('#filterValueFieldEmployee select').val();
+    }
+
+    if (value == '' || type == '') 
+    {
+        alert('Preencha todos os campos');
+        return;
+    }
+
     var filter = {
         id: filters.length,
-        type: $('#filterType').val(),
+        type: type,
         operator: $('#filterOperator').val(),
-        value: $('#filterValue').val()
+        value: value
     }
 
     if (filters.find(f => f.type == filter.type && f.value == filter.value)) {
@@ -578,7 +689,7 @@ function updateTableInfo()
         {
             data.forEach(row => {
                 for (var key in row) {
-                    if (row[key].toString().toLowerCase().includes(searchBar.toLowerCase())) {
+                    if (row[key] && row[key].toString().toLowerCase().includes(searchBar.toLowerCase())) {
                         filteredData.push(row);
                         break;
                     }
@@ -1025,8 +1136,12 @@ function deleteOS()
                 return;
             }
 
+            document.querySelector('.modal-backdrop').remove();
             $('#removeModal').hide();
             updateTableInfo();
+
+            selectedRows = [];
+            setButtonsState();
         });
     }
 }

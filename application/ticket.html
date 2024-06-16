@@ -77,16 +77,21 @@
                     Filtros...
                 </button>
 
+                <!-- Pesquisar btn -->
+                <button type="button" class="btn btn-primary" id="searchBtn" onclick="updateTableInfo()">
+                    Pesquisar
+                </button>
+
                 <div hidden id="popoverContent">
                     <div class="popoverContent">
                         <!-- Tipo de filtro (Opções) -->
                         <div>
-                            <select class="form-select" id="filterType">
+                            <select class="form-select" id="filterType" onchange="setFilterValueField()">
                                 <option selected hidden disabled>Filtrar por:</option>
-                                <option value="cliente">Cliente</option>
-                                <option value="funcionario">Funcionário</option>
-                                <option value="data-inicio">Data de Início</option>
-                                <option value="data-término">Data de Término</option>
+                                <option value="clientID">Cliente</option>
+                                <option value="funcID">Funcionário</option>
+                                <option value="dataInicio">Data de Início</option>
+                                <option value="dataFim">Data de Término</option>
                             </select>
                         </div>
 
@@ -99,9 +104,30 @@
                         </div>
 
                         <!-- Valor -->
-                        <div>
-                            <input type="text" class="form-control" id="filterValue" placeholder="Valor:">
+                        <!-- Diferentes tipos de input para cada um dos options abaixo:
+                            <option selected hidden disabled>Filtrar por:</option>
+                            <option value="cliente">Cliente</option>
+                            <option value="funcionario">Funcionário</option>
+                            <option value="data-inicio">Data de Início</option>
+                            <option value="data-término">Data de Término</option>
+                        -->
+                        <div id="disabledInputFilter">
+                            <input type="text" class="form-control disabledFilterValue" id="disabledFilterValue" readonly>
                         </div>
+
+                        <div id="filterValueFieldCustomer">         
+                            <select class="selectClientFilter" id="ClientFilterValue" data-live-search="true" title="Selecione um cliente">
+                                <!--Adicionado dinamicamente-->
+                            </select>
+                        </div>
+
+                        <div id="filterValueFieldEmployee">
+                            <select class="selectEmployeeFilter" id="EmployeeFilterValue" data-live-search="true" title="Selecione um funcionário">
+                                <!--Adicionado dinamicamente-->
+                            </select>
+                        </div>
+                        
+                        <input type="date" class="form-control dateFilterValue" id="dateFilterValue">
 
                         <!-- Botão Adicionar Filtro -->
                         <div class="addFilter">
@@ -117,7 +143,6 @@
                     <hr>
 
                     <div class="popoverBtns">
-                        <button type="button" class="btn btn-primary" id="filterBtn">Filtrar</button>
                         <button type="button" class="btn btn-secondary" id="clearFilterBtn" onclick="clearFilters()">Limpar</button>
                     </div>
 
