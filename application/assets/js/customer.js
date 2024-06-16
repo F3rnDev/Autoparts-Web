@@ -334,7 +334,7 @@ function updateTableInfo()
     .then(response => response.json())
     .then(data => {
         if(data.error){
-            alert(data.message);
+            alert(data.error);
             return;
         }
         

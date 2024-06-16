@@ -25,6 +25,9 @@
     <!--cur screen-->
     <script src="assets/js/ticket.js"></script>
     <link rel="stylesheet" href="assets/css/ticket.css">
+
+    <!--custom plugins-->
+    <script src="https://unpkg.com/imask"></script>
 </head>
 <body>
     <script>header();</script>
@@ -66,7 +69,7 @@
                 
 
                 <div class="searchBar">
-                    <input type="text" placeholder="Pesquisar..." class="searchInput">
+                    <input type="text" placeholder="Pesquisar..." class="searchInput" id="searchBarInput">
                     <i class="fas fa-search searchBtn"></i>
                 </div>
 
@@ -131,33 +134,6 @@
 
                     <div class="kanbanColumnContent">
                         <!--cards do kanban. Deve ser dinamico com o database-->
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
                     </div>
                 </div>
 
@@ -177,168 +153,6 @@
 
                     <div class="kanbanColumnContent">
                         <!--cards do kanban. Deve ser dinamico com o database-->
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
-                        <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
-                            <div class="kanbanCardTitle kanbanCardSection">
-                                <h5>ID: 0001</h5>
-                                
-                                <div class="form-check">
-                                    <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
-                                </div>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Cliente: Thiago Pacheco</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Tipo de Serviço: Troca de Peça</h5>
-                            </div>
-
-                            <div class="kanbanCardSection">
-                                <h5>Data de Inicio: 10/10/2024</h5>
-                            </div>
-
-                            <br>
-
-                            <div class="kanbanCardSection">
-                                <h5>Valor total do Serviço: R$45,00</h5>
-                            </div>
-                        </div> 
                     </div>
                 </div>
 
@@ -365,6 +179,7 @@
                         <div class="modal-body">
                             <form>
                                 <!-- Dados gerais -->
+                                <input type="hidden" class="ticketID" id="ticketID">
                                 <div class="mb-3">
                                     <label for="ticketStatus" class="form-label">
                                         Status:
@@ -373,12 +188,28 @@
                                     <input type="text" class="form-control ticketStatus" id="ticketStatus" readonly> 
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="ticketType" class="form-label">
+                                        Tipo de OS:
+                                    </label>   
+                                    
+                                    <select name="ticketType" class="form-select ticketType" id="ticketType" readonly>
+                                        <option value="vendaPeca">Venda de Peça</option>
+                                        <option value="trocaPeca">Troca de Peça</option>
+                                        <option value="manutencao">Manutenção</option>
+                                        <option value="reparo">Reparo</option>
+                                        <option value="instalacao">Instalação</option>
+                                        <option value="diagnostico">Diagnóstico</option>
+                                        <option value="garantia">Garantia</option>
+                                        <option value="consulta">Consulta/Orçamento</option>
+                                        <option value="emergencia">Serviço de Emergência</option>
+                                    </select>
+                                </div>
+
                                 <div class="formSubSection">
                                     <div class="mb-3 selectControl">
                                         <label for="selectCustomer" class="form-label">Cliente:</label>
                                         <select name="selectCustomer" class="selectCustomer selectpicker" id="selectCustomer" data-live-search="true" title="Selecione um cliente">
-                                            <option>Selecione um cliente</option> <!--Remover-->
-                                            <option>Produto 1</option>
                                             <!--Adicionado dinamicamente-->
                                         </select>
                                     </div>
@@ -386,8 +217,6 @@
                                     <div class="mb-3 selectControl">
                                         <label for="selectEmployee" class="form-label">Funcionário:</label>
                                         <select name="selectEmployee" class="selectEmployee selectpicker" id="selectEmployee" data-live-search="true" title="Selecione um funcionário">
-                                            <option>Selecione um funcionário</option> <!--Remover-->
-                                            <option>Produto 1</option>
                                             <!--Adicionado dinamicamente-->
                                         </select>
                                     </div>
@@ -411,80 +240,82 @@
                                     <textarea class="form-control" id="serviceDescription" rows="5"></textarea>
                                 </div>
                                 
-                                <hr class="insideSecUp">
+                                <div id="setProductSection">
+                                    <hr class="insideSecUp">
 
-                                <div class="setProd">
-                                    <div class="formSubSection">
-                                        <div class="mb-3 selectControl">
-                                            <label for="selectProduct" class="form-label">Produto Utilizado:</label>
+                                    <div class="setProd">
+                                        <div class="formSubSection">
+                                            <div class="mb-3 selectControl">
+                                                <label for="selectProduct" class="form-label">Produto Utilizado:</label>
 
-                                            <select name="selectProduct" id="selectProduct" class="selectpicker selectProduct" data-live-search="true" title="Selecione um produto">
-                                                <option>Selecione um produto</option> <!--Remover-->
-                                                <option>Produto 1</option> <!--Adicionado dinamicamente-->
-                                                <!--Adicionado dinamicamente-->
-                                            </select>
+                                                <select name="selectProduct" id="selectProduct" class="selectpicker selectProduct" data-live-search="true" title="Selecione um produto" onchange="setMaxProdQuantity()">
+                                                    <!--Adicionado dinamicamente-->
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="qtdProd" class="form-label">Quantidade:</label>
+                                                <input type="number" min="1" value="1" class="form-control qtdProd" id="qtdProd">
+                                            </div>
+
+                                            <!--botão de adicionar-->
+                                            <div class="addProduct">
+                                                <button type="button" class="btn btn-primary" id="addProductBtn" onclick="addProduct()"><i class="fas fa-plus"></i></button>
+                                            </div>
+
+                                            <!--botão alterar-->
+                                            <div class="editProduct">
+                                                <button type="button" class="btn btn-primary" id="changeProductBtn" onclick="editProduct()"><i class="fas fa-edit"></i></button>
+                                            </div>
+
                                         </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="qtdProd" class="form-label">Quantidade:</label>
-                                            <input type="number" min="1" value="1" class="form-control qtdProd" id="qtdProd">
-                                        </div>
 
-                                        <!--botão de adicionar-->
-                                        <div class="addProduct">
-                                            <button type="button" class="btn btn-primary" id="addProductBtn" onclick="addProduct()"><i class="fas fa-plus"></i></button>
-                                        </div>
+                                        <!--tabela de produto-->
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-light table-bordered">
+                                                    <tr>
+                                                        <th>Produto</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor Unitário</th>
+                                                        <th>Valor Total</th>
+                                                        <th id="removeBtnHead"></th>
+                                                    </tr>
+                                                </thead>
 
-                                        <!--botão alterar-->
-                                        <div class="editProduct">
-                                            <button type="button" class="btn btn-primary" id="changeProductBtn" onclick="editProduct()"><i class="fas fa-edit"></i></button>
+                                                <tbody id="productTable">
+                                                    <!--Adicionado dinamicamente-->
+                                                </tbody>
+                                            </table>
                                         </div>
-
                                     </div>
 
-                                    <!--tabela de produto-->
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead class="table-light table-bordered">
-                                                <tr>
-                                                    <th>Produto</th>
-                                                    <th>Quantidade</th>
-                                                    <th>Valor Unitário</th>
-                                                    <th>Valor Total</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody id="productTable">
-                                                <!--Adicionado dinamicamente-->
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                    <hr class="insideSecDown">
                                 </div>
 
-                                <hr class="insideSecDown">
-
-                                <h5 class="valueTitle">Valor:</h5>
-                                <div class="valueGrp">
-                                    <div class="values">
-                                        <div class="value">
-                                            <label for="productValue" class="form-label">Valor do Produto:</label>
-                                            <input type="text" class="form-control" id="productValue" readonly>
+                                <div id="valueSection">
+                                    <h5 class="valueTitle">Valor:</h5>
+                                    <div class="valueGrp">
+                                        <div class="values">
+                                            <div class="value">
+                                                <label for="productValue" class="form-label">Valor do Produto:</label>
+                                                <input type="text" class="form-control" id="productValue" readonly>
+                                            </div>
+                                            <div class="value">
+                                                <label for="serviceValue" class="form-label">Valor do Serviço:</label>
+                                                <input type="text" class="form-control" id="serviceValue" onkeyup="updateFinalValue()">
+                                            </div>
                                         </div>
-                                        <div class="value">
-                                            <label for="serviceValue" class="form-label">Valor do Serviço:</label>
-                                            <input type="text" class="form-control" id="serviceValue">
+
+                                        <!-- Sinal de Mais -->
+                                        <div class="addValue">
+                                            <i class="fas fa-plus"></i>
                                         </div>
-                                    </div>
 
-                                    <!-- Sinal de Mais -->
-                                    <div class="addValue">
-                                        <i class="fas fa-plus"></i>
-                                    </div>
-
-                                    <!--Valor Total-->
-                                    <div class="totalValue">
-                                        <h5>Total: R$0,00</h5>
+                                        <!--Valor Total-->
+                                        <div class="totalValue">
+                                            <h5 id="totalVal">Total: R$0,00</h5>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -494,10 +325,10 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button>
-                            <button type="button" class="btn btn-success" id="executeOS">Concluir OS</button>
-                            <button type="button" class="btn btn-danger" id="cancelOS">Cancelar OS</button>
-                            <button type="button" class="btn btn-success" id="createOS">Criar OS</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges" onclick="editOS()">Salvar alterações</button>
+                            <button type="button" class="btn btn-success" id="executeOS" onclick="editOS('concluido')">Concluir OS</button>
+                            <button type="button" class="btn btn-danger" id="cancelOS" onclick="editOS('cancelado')">Cancelar OS</button>
+                            <button type="button" class="btn btn-success" id="createOS" onclick="addOS()">Criar OS</button>
                         </div>
                     </div>
                 </div>
@@ -519,7 +350,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-danger" id="removeCustomer">Excluir</button>
+                            <button type="button" class="btn btn-danger" id="removeOS" onclick="deleteOS()">Excluir</button>
                         </div>
                 </div>
             </div>

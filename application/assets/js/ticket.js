@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
     setButtonsState();
+    updateTableInfo();
 
     var popupData = document.querySelector('#popoverContent').innerHTML;
     document.querySelector('#popoverContent').remove();
@@ -23,6 +24,27 @@ document.addEventListener('DOMContentLoaded', function(){
 $(function() {
     $('.selectpicker').selectpicker();
 });
+
+function setModalFieldMask(serviceValue)
+{
+    var mask = IMask(document.getElementById('serviceValue'), {
+        mask: 'R$00.00'
+    });
+
+    mask.value = serviceValue;
+}
+
+function getModalFieldMask()
+{
+    var mask = IMask(document.getElementById('serviceValue'), {
+        mask: 'R$00.00'
+    });
+
+    //retornar valor sem mascara, separar os dois ultimos digitos com um ponto
+    var value = mask.unmaskedValue.slice(0, -2) + "." + mask.unmaskedValue.slice(-2);
+
+    return value;
+}
 
 function setButtonsState()
 {
@@ -68,10 +90,15 @@ function openTicketModal(value)
     {
         $('#modalTitle').text('Dados da OS');
         clearTicketModal();
+        setCustomerList();
+        setEmployeeList();
+        setProductList();
     }
     else
     {
-        updateTicketModal();
+        $('#setProductSection').prop('hidden', false);
+        $('#valueSection').prop('hidden', false);
+        setModal();
     }
 
     if (value == 'view')
@@ -85,6 +112,11 @@ function openTicketModal(value)
 
     setInsideTableBtns();
     clearInsideSelection();
+}
+
+function setModal()
+{
+    setCustomerList(true);
 }
 
 function setModalsBittonsState(value)
@@ -114,8 +146,11 @@ function setModalsBittonsState(value)
     }
 }
 
+var isView = false;
 function setModalFields(readonly)
 {
+    document.getElementById('ticketType').disabled = readonly;
+
     document.getElementById('selectCustomer').disabled = readonly;
     document.getElementById('selectEmployee').disabled = readonly;
     document.getElementById('selectProduct').disabled = readonly;
@@ -127,22 +162,19 @@ function setModalFields(readonly)
 
     document.getElementById('serviceValue').readOnly = readonly;
 
-    $('.removeProduct').toggle(!readonly);
-    $('.addProduct').toggle(!readonly);
-    $('.editProduct').toggle(!readonly);
-}
+    $('.addProduct').prop('hidden', readonly);
+    $('.editProduct').prop('hidden', readonly);
 
-function updateTicketModal()
-{
-    var ticket = selectedRows[0];
-    var ticketData = $(ticket).find('.kanbanCardTitle h5');
-
-    $('#modalTitle').text('Dados da OS - ' + ticketData[0].innerText.split(' ')[1]);
+    isView = readonly;
 }
 
 function clearTicketModal()
 {
+    $('#setProductSection').prop('hidden', true);
+    $('#valueSection').prop('hidden', true);
+    $('#ticketID').val('');
     $('#ticketStatus').val('Em andamento');
+    $('#ticketType').val('');
 
     //pega data atual e seta no campo ticketDate
     var date = new Date();
@@ -153,6 +185,7 @@ function clearTicketModal()
     var today = yyyy + '-' + mm + '-' + dd;
 
     $('#ticketDate').val(today);
+    $('#ticketEndDate').val('').attr('type', 'text').attr('type', 'date');
 
     document.getElementById('selectCustomer').value = '';
     document.getElementById('selectEmployee').value = '';
@@ -160,6 +193,9 @@ function clearTicketModal()
     $('.selectpicker').selectpicker('refresh')
 
     document.getElementById('qtdProd').value = '1';
+    
+    var table = document.getElementById('productTable');
+    table.innerHTML = '';
 
     document.getElementById('serviceDescription').value = '';
 
@@ -194,6 +230,7 @@ function selectInsideTableRow(row)
 
     setInsideTableBtns();
     changeProductValues();
+    setMaxProdQuantity();
 }
 
 function clearInsideSelection()
@@ -219,7 +256,7 @@ function changeProductValues()
         return;
     }
 
-    var product = $(selectedInsideRows[0]).find('td')[1].innerText;
+    var product = $(selectedInsideRows[0]).find('td')[0].innerText;
     var qtd = $(selectedInsideRows[0]).find('td')[2].innerText;
 
     document.getElementById('selectProduct').value = product;
@@ -253,39 +290,115 @@ function addProduct()
         return;
     }
 
-    //check if product already exists in the table
-    var table = document.getElementById('productTable');
-
-    for (var i = 0; i < table.rows.length; i++)
-    {
-        var row = table.rows[i];
-        if (row.cells[1].innerText == product)
+    //checar se produto já foi adicionado
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/getTicketData.php?id=' + $('#ticketID').val(), {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
         {
-            alert('Produto já adicionado');
+            alert(data.error);
             return;
         }
-    }
 
-    //get more database data
+        for (var i = 0; i < data.products.length; i++)
+        {
+            if (data.products[i].prodID == product)
+            {
+                alert('Produto já adicionado');
+                return;
+            }
+        }
 
-    var rowHtml = `
-        <tr onclick="selectInsideTableRow(this);">
-            <td id="insideRowId" hidden class="align-middle">COLOCAR ID DO BANCO DE DADOS</td>
-            <td class="align-middle">${product}</td>
-            <td class="align-middle">${qtd}</td>
-            <td class="align-middle">R$ 0,00</td>
-            <td class="align-middle">R$ 0,00</td>
-            <td class="align-middle align-right">
-                <button type="button" class="btn btn-danger" id="removeProductBtn" onclick="deleteProduct(this.closest('tr')); event.stopPropagation()"><i class="fas fa-xmark"></i></button>
-            </td>
-        </tr>
-    `
+        fetch('http://localhost/autoparts-web/application/backend/requests/ticket/addTicketProd.php?',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                product: product,
+                qtd: qtd,
+                os: $('#ticketID').val()
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error)
+            {
+                alert(data.error);
+                return;
+            }
 
-    table.innerHTML += rowHtml;
+            updateInsideTable();
 
-    document.getElementById('selectProduct').value = '';
-    $('#selectProduct').selectpicker('refresh')
-    document.getElementById('qtdProd').value = '1';
+            document.getElementById('selectProduct').value = '';
+            $('#selectProduct').selectpicker('refresh')
+            document.getElementById('qtdProd').value = '1';
+        });
+    });
+}
+
+function updateInsideTable()
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/getTicketData.php?id=' + $('#ticketID').val(), {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        var table = document.getElementById('productTable');
+        table.innerHTML = '';
+
+        data.products.forEach(product => {
+            fetch('http://localhost/autoparts-web/application/backend/requests/product/getInventoryProduct.php?id=' + product.prodID, 
+            {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error)
+                {
+                    alert(data.error);
+                    return;
+                }
+
+                var total = parseFloat(data.valorUn) * parseFloat(product.quant);
+
+                //colocar zero no total
+                var total = total.toFixed(2);
+
+                //excluir o botão caso isView seja true
+                var btnHtml = '';
+                document.getElementById('removeBtnHead').hidden = true;
+                if (!isView)
+                {
+                    btnHtml = `
+                        <td class="align-middle align-right">
+                            <button type="button" class="btn btn-danger" id="removeProductBtn" onclick="deleteProduct(this.closest('tr')); event.stopPropagation()"><i class="fas fa-xmark"></i></button>
+                        </td>  
+                    `
+
+                    //excluir campo do botão da header da tabela
+                    document.getElementById('removeBtnHead').hidden = false;
+                }
+
+                var rowHtml = `
+                    <tr onclick="selectInsideTableRow(this);">
+                        <td id="insideRowId" hidden class="align-middle">${data.ID}</td>
+                        <td class="align-middle">${data.produto} (${data.filial})</td>
+                        <td class="align-middle">${product.quant}</td>
+                        <td class="align-middle">R$ ${data.valorUn}</td>
+                        <td class="align-middle">R$ ${total}</td>
+                        ${btnHtml}
+                    </tr>
+                `
+
+                table.innerHTML += rowHtml;
+
+                updateFinalValue();
+            });
+        });
+
+        updateFinalValue();
+    });
 }
 
 function deleteProduct(row)
@@ -295,11 +408,30 @@ function deleteProduct(row)
         selectedInsideRows = [];
     }
 
-    row.remove();
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/deleteTicketProd.php?',
+    {
+        method: 'POST',
+        body: JSON.stringify({
+            id: $(row).find('td')[0].innerText,
+            os: $('#ticketID').val()
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
 
-    document.getElementById('selectProduct').value = '';
-    $('#selectProduct').selectpicker('refresh')
-    document.getElementById('qtdProd').value = '1';
+        updateInsideTable();
+        selectedInsideRows = [];
+        setInsideTableBtns();
+
+        document.getElementById('selectProduct').value = '';
+        $('#selectProduct').selectpicker('refresh')
+        document.getElementById('qtdProd').value = '1';
+    });
 }
 
 function editProduct()
@@ -313,44 +445,73 @@ function editProduct()
         return;
     }
 
-    var table = document.getElementById('productTable');
-
-    for (var i = 0; i < table.rows.length; i++)
-    {
-        var row = table.rows[i];
-        if (row.cells[1].innerText == product && row != selectedInsideRows[0])
+    //checar se produto já foi adicionado
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/getTicketData.php?id=' + $('#ticketID').val(), {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
         {
-            alert('Produto já adicionado');
-            document.getElementById('selectProduct').value = selectedInsideRows[0].cells[1].innerText;
-            $('#selectProduct').selectpicker('refresh')
+            alert(data.error);
             return;
         }
-    }
 
-    var row = selectedInsideRows[0];
-    row.cells[1].innerText = product;
-    row.cells[2].innerText = qtd;
+        for (var i = 0; i < data.products.length; i++)
+        {
+            if (data.products[i].prodID == product && data.products[i].prodID != $(selectedInsideRows[0]).find('td')[0].innerText)
+            {
+                alert('Produto já adicionado');
+                return;
+            }
+        }
 
-    clearInsideSelection();
+        fetch('http://localhost/autoparts-web/application/backend/requests/ticket/editTicketProd.php?',
+        {
+            method: 'POST',
+            body: JSON.stringify({
+                product: product,
+                qtd: qtd,
+                os: $('#ticketID').val(),
+                id: $(selectedInsideRows[0]).find('td')[0].innerText
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error)
+            {
+                alert(data.error);
+                return;
+            }
+            
+            updateInsideTable();
+            selectedInsideRows = [];
+            setInsideTableBtns();
+
+            document.getElementById('selectProduct').value = '';
+            $('#selectProduct').selectpicker('refresh')
+            document.getElementById('qtdProd').value = '1';
+        });
+    });
 }
 
-const filterList = [];
+const filters = [];
 
 function addFilter()
 {
     var filter = {
-        id: filterList.length,
+        id: filters.length,
         type: $('#filterType').val(),
         operator: $('#filterOperator').val(),
         value: $('#filterValue').val()
     }
 
-    if (filterList.find(f => f.type == filter.type && f.value == filter.value)) {
+    if (filters.find(f => f.type == filter.type && f.value == filter.value)) {
         alert("Filtro já adicionado");
         return;
     }
 
-    filterList.push(filter);
+    filters.push(filter);
 
     setFilterList();
 }
@@ -360,7 +521,7 @@ function setFilterList()
     var obj = document.querySelector('.filterList');
     obj.innerHTML = '';
 
-    filterList.forEach(filter => {
+    filters.forEach(filter => {
 
         var operator = "a";
         if (filter.operator == "diferente") {
@@ -382,12 +543,510 @@ function setFilterList()
 
 function removeFilter(id)
 {
-    filterList.splice(filterList.findIndex(f => f.id == id), 1);
+    filters.splice(filters.findIndex(f => f.id == id), 1);
     setFilterList();
 }
 
 function clearFilters()
 {
-    filterList.splice(0, filterList.length);
+    filters.splice(0, filters.length);
     setFilterList();
+}
+
+//DATABASE
+function updateTableInfo()
+{   
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/getTicketTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.message);
+            return;
+        }
+
+        var searchBar = document.querySelector('#searchBarInput').value;
+        var filteredData = data
+
+        if (searchBar != '' || filters.length > 0) {
+            filteredData = [];
+        }
+
+        if (searchBar != '')
+        {
+            data.forEach(row => {
+                for (var key in row) {
+                    if (row[key].toString().toLowerCase().includes(searchBar.toLowerCase())) {
+                        filteredData.push(row);
+                        break;
+                    }
+                }
+            });
+        }
+
+        if (filters.length > 0)
+        {
+            data.forEach(row => {
+                var valid = true;
+
+                filters.forEach(filter => {
+                    if (filter.operator == 'igual') {
+                        if (row[filter.type] != filter.value) {
+                            valid = false;
+                        }
+                    }
+                    if (filter.operator == 'diferente') {
+                        if (row[filter.type] == filter.value) {
+                            valid = false;
+                        }
+                    }
+                });
+
+                if (valid) {
+                    filteredData.push(row);
+                }
+            });
+        }
+
+        var progressColumn = document.querySelector('#progress .kanbanColumnContent');
+        var doneColumn = document.querySelector('#done .kanbanColumnContent');
+        var cancel = document.querySelector('#cancelled .kanbanColumnContent');
+
+        progressColumn.innerHTML = '';
+        doneColumn.innerHTML = '';
+        cancel.innerHTML = '';
+
+        filteredData.forEach(row => {
+            //definir formato da data
+            row.dataInicio = new Date(row.dataInicio).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+            row.dataFim = new Date(row.dataFim).toLocaleDateString('pt-BR', {timeZone: 'UTC'});
+
+            var curDate = "Data de Inicio: " + row.dataInicio;
+            if (row.status != 'em andamento') {
+                curDate = "Data de Término: " + row.dataFim;
+            }
+
+            //filtrar tipo de serviço 
+            // <option value="vendaPeca">Venda de Peça</option>
+            // <option value="trocaPeca">Troca de Peça</option>
+            // <option value="manutencao">Manutenção</option>
+            // <option value="reparo">Reparo</option>
+            // <option value="instalacao">Instalação</option>
+            // <option value="diagnostico">Diagnóstico</option>
+            // <option value="garantia">Garantia</option>
+            // <option value="consulta">Consulta/Orçamento</option>
+            // <option value="emergencia">Serviço de Emergência</option>
+            
+            switch(row.tipo)
+            {
+                case 'vendaPeca':
+                    row.tipo = 'Venda de Peça';
+                    break;
+                case 'trocaPeca':
+                    row.tipo = 'Troca de Peça';
+                    break;
+                case 'manutencao':
+                    row.tipo = 'Manutenção';
+                    break;
+                case 'reparo':
+                    row.tipo = 'Reparo';
+                    break;
+                case 'instalacao':
+                    row.tipo = 'Instalação';
+                    break;
+                case 'diagnostico':
+                    row.tipo = 'Diagnóstico';
+                    break;
+                case 'garantia':
+                    row.tipo = 'Garantia';
+                    break;
+                case 'consulta':
+                    row.tipo = 'Consulta/Orçamento';
+                    break;
+                case 'emergencia':
+                    row.tipo = 'Serviço de Emergência';
+                    break;
+            }
+
+
+
+            var html = `
+                <div class="kanbanCard" onclick="selectRow(this, 'single'); setButtonsState();">
+                    <div class="kanbanCardTitle kanbanCardSection">
+                        <h5>ID: ${row.ID}</h5>
+                        
+                        <div class="form-check">
+                            <input class="form-check-input selectCheck" type="checkbox" value="" onclick="selectRow(this.closest('.kanbanCard'), 'multi'); event.stopPropagation(); setButtonsState();">
+                        </div>
+                    </div>
+
+                    <div class="kanbanCardSection">
+                        <h5>Cliente: ${row.cliente}</h5>
+                    </div>
+                    
+                    <div class="kanbanCardSection">
+                        <h5>Responsável: ${row.funcionario}</h5>
+                    </div>
+                    
+                    <br>
+
+                    <div class="kanbanCardSection">
+                        <h5>Tipo de Serviço: ${row.tipo}</h5>
+                    </div>
+
+                    <div class="kanbanCardSection">
+                        <h5>${curDate}</h5>
+                    </div>
+                </div> 
+            `;
+
+            if (row.status == 'em andamento') {
+                progressColumn.innerHTML += html;
+            }
+            if (row.status == 'concluido') {
+                doneColumn.innerHTML += html;
+            }
+            if (row.status == 'cancelado') {
+                cancel.innerHTML += html;
+            }
+        });
+        
+    });
+}
+
+function updateTicketModal()
+{
+    var ticket = selectedRows[0];
+    var ticketData = $(ticket).find('.kanbanCardTitle h5');
+    var id = ticketData[0].innerText.split(' ')[1];
+
+    $('#modalTitle').text('Dados da OS - ' + id);
+    $('#ticketID').val(id);
+
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/getTicketData.php?id=' + id, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var curStatus = data.status;
+
+        switch(data.status)
+        {
+            case 'em andamento':
+                curStatus = 'Em andamento';
+                break;
+            case 'concluido':
+                curStatus = 'Concluído';
+                break;
+            case 'cancelado':
+                curStatus = 'Cancelado';
+                break;
+        }
+
+        $('#ticketStatus').val(curStatus);
+        $('#ticketType').val(data.tipo);
+
+        $('#selectCustomer').val(data.clientID);
+        $('#selectEmployee').val(data.funcID);
+        $('.selectpicker').selectpicker('refresh');
+
+        $('#ticketDate').val(data.dataInicio);
+        $('#ticketEndDate').val(data.dataFim);
+
+        $('#serviceDescription').val(data.descrição);
+
+        if (data.valorServiço != null){
+            setModalFieldMask(data.valorServiço)
+        }
+        else
+        {
+            setModalFieldMask("");
+        }
+
+        $('#selectProduct').val('');
+        $('#qtdProd').val('1');
+
+        updateInsideTable();
+    });
+}
+
+function updateFinalValue()
+{
+    var table = document.getElementById('productTable');
+    var total = 0;
+
+    for (var i = 0; i < table.rows.length; i++)
+    {
+        var row = table.rows[i];
+        total += parseFloat(row.cells[4].innerText.split(' ')[1]);
+    }
+
+    if (table.rows.length == 0)
+    {
+        document.getElementById('productValue').value = '';
+    }
+    else
+    {
+        document.getElementById('productValue').value = 'R$' + total.toFixed(2);
+    }
+
+    //separar dois ultimos digitos com um ponto
+    var serviceValue = getModalFieldMask();
+
+    document.getElementById('totalVal').innerHTML = "Total: R$" + (total + parseFloat(serviceValue)).toFixed(2);
+}
+
+function setCustomerList(wait = false)
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/customer/getCustomerTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var select = document.getElementById('selectCustomer');
+        select.innerHTML = '';
+
+        data.forEach(customer => {
+            var option = document.createElement('option');
+            option.value = customer.ID;
+            option.text = customer.ID + " - " + customer.nome;
+            select.add(option);
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+
+        if (wait) {
+            setEmployeeList(true);
+        }
+    });
+}
+
+function setEmployeeList(wait = false)
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/employee/getEmployeeTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var select = document.getElementById('selectEmployee');
+        select.innerHTML = '';
+
+        data.forEach(employee => {
+            var option = document.createElement('option');
+            option.value = employee.ID;
+            option.text = employee.ID + " - " + employee.nome;
+            select.add(option);
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+
+        if (wait) {
+            setProductList(true);
+        }
+    });
+}
+
+function setProductList(wait = false)
+{
+    fetch('http://localhost/autoparts-web/application/backend/requests/product/getInventoryTable.php', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        var select = document.getElementById('selectProduct');
+        select.innerHTML = '';
+
+        data.forEach(product => {
+            var option = document.createElement('option');
+            option.value = product.ID;
+            option.text = product.ID + " - " + product.produto + " (" + product.filial + ")";
+            select.add(option);
+        });
+
+        $('.selectpicker').selectpicker('refresh');
+
+        if (wait) {
+            updateTicketModal();
+        }
+    });
+}
+
+function addOS()
+{
+    var customer = document.getElementById('selectCustomer').value;
+    var employee = document.getElementById('selectEmployee').value;
+    var type = document.getElementById('ticketType').value;
+    var date = document.getElementById('ticketDate').value;
+    var description = document.getElementById('serviceDescription').value;
+    var status = "em andamento";
+
+    console.log(date);
+
+    if (customer == '' || employee == '' || type == '' || description == '')
+    {
+        alert('Preencha todos os campos');
+        return;
+    }
+
+
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/addTicket.php?', {
+        method: 'POST',
+        body: JSON.stringify({
+            customer: customer,
+            employee: employee,
+            type: type,
+            date: date,
+            description: description,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        updateTableInfo();
+        $('#ticketModal').modal('hide');
+    });
+}
+
+function editOS(status = undefined)
+{
+    var id = $('#ticketID').val();
+    var customer = document.getElementById('selectCustomer').value;
+    var employee = document.getElementById('selectEmployee').value;
+    var type = document.getElementById('ticketType').value;
+    var date = document.getElementById('ticketDate').value;
+    var description = document.getElementById('serviceDescription').value;
+    var value = getModalFieldMask();
+    var endDate = document.getElementById('ticketEndDate').value;
+
+    if (customer == '' || employee == '' || type == '' || description == '' || value == '.')
+    {
+        alert('Preencha todos os campos');
+        return;
+    }
+
+    if (status == undefined)
+    {
+        status = $('#ticketStatus').val();
+
+        if (status == 'Em andamento')
+        {
+            status = 'em andamento';
+        }
+        else if (status == 'Concluído')
+        {
+            status = 'concluido';
+        }
+        else if (status == 'Cancelado')
+        {
+            status = 'cancelado';
+        }
+    }
+    else
+    {
+        endDate = new Date();
+    }
+
+    fetch('http://localhost/autoparts-web/application/backend/requests/ticket/editTicket.php?', {
+        method: 'POST',
+        body: JSON.stringify({
+            id: id,
+            customer: customer,
+            employee: employee,
+            type: type,
+            date: date,
+            endDate: endDate,
+            description: description,
+            value: value,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        updateTableInfo();
+        $('#ticketModal').modal('hide');
+    });
+}
+
+function deleteOS()
+{
+    for (var i = 0; i < selectedRows.length; i++)
+    {
+        var id = selectedRows[i].querySelector('.kanbanCardTitle h5').innerText.split(' ')[1];
+
+        fetch('http://localhost/autoparts-web/application/backend/requests/ticket/deleteTicket.php?', {
+            method: 'POST',
+            body: JSON.stringify({
+                id: id
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error)
+            {
+                alert(data.error);
+                return;
+            }
+
+            $('#removeModal').hide();
+            updateTableInfo();
+        });
+    }
+}
+
+function setMaxProdQuantity()
+{
+    var product = document.getElementById('selectProduct').value;
+
+    fetch('http://localhost/autoparts-web/application/backend/requests/product/getInventoryProduct.php?id=' + product, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error)
+        {
+            alert(data.error);
+            return;
+        }
+
+        document.getElementById('qtdProd').max = data.quantidade;
+        document.getElementById('qtdProd').value = 1;
+    });
 }
