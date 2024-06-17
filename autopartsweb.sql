@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 12-Jun-2024 às 07:22
+-- Tempo de geração: 17-Jun-2024 às 05:24
 -- Versão do servidor: 10.4.24-MariaDB
 -- versão do PHP: 7.4.29
 
@@ -42,6 +42,14 @@ CREATE TABLE `cliente` (
   `complemento` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Extraindo dados da tabela `cliente`
+--
+
+INSERT INTO `cliente` (`ID`, `nome`, `cpf`, `telefone`, `email`, `cep`, `estado`, `cidade`, `bairro`, `rua`, `numero`, `complemento`) VALUES
+(25, 'Oloco Carneiro', '70283449675', '3488888888', 'teste@teste.teste', '89203522', 'SC', 'Joinville', 'Anita Garibaldi', 'Rua Gothard Kaesemodel', '123', 'casa'),
+(26, 'Roberto Carlos', '70283449675', '3212342324', 'dsadsa@sdada.com', '89203522', 'SC', 'Joinville', 'Anita Garibaldi', 'Rua Gothard Kaesemodel', '123', 'casa');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +80,13 @@ CREATE TABLE `funcionario` (
   `tipo` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Extraindo dados da tabela `funcionario`
+--
+
+INSERT INTO `funcionario` (`ID`, `nome`, `email`, `senha`, `telefone`, `nascData`, `tipo`) VALUES
+(1, 'teste', 'teste@teste.com', 'ersters', '3434243232', '2024-06-14', 'funcionario');
+
 -- --------------------------------------------------------
 
 --
@@ -85,6 +100,14 @@ CREATE TABLE `inventario` (
   `quantidade` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Extraindo dados da tabela `inventario`
+--
+
+INSERT INTO `inventario` (`ID`, `prodID`, `filial`, `quantidade`) VALUES
+(1, '543865', 'Joinville - SC', 10),
+(2, '543865', 'São Paulo - SP', 9);
+
 -- --------------------------------------------------------
 
 --
@@ -93,16 +116,42 @@ CREATE TABLE `inventario` (
 
 CREATE TABLE `os` (
   `ID` int(11) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
   `status` varchar(50) NOT NULL,
   `clientID` int(11) NOT NULL,
   `funcID` int(11) NOT NULL,
-  `prodID` varchar(255) NOT NULL,
-  `prodQuant` int(11) NOT NULL,
   `dataInicio` date NOT NULL,
-  `dataFim` date NOT NULL,
+  `dataFim` date DEFAULT NULL,
   `descrição` varchar(100) NOT NULL,
-  `valorServiço` decimal(2,0) NOT NULL
+  `valorServiço` decimal(6,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `os`
+--
+
+INSERT INTO `os` (`ID`, `tipo`, `status`, `clientID`, `funcID`, `dataInicio`, `dataFim`, `descrição`, `valorServiço`) VALUES
+(23, 'diagnostico', 'em andamento', 26, 1, '2024-06-16', NULL, 'teste', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `osprod`
+--
+
+CREATE TABLE `osprod` (
+  `ID` int(11) NOT NULL,
+  `osID` int(11) NOT NULL,
+  `prodID` int(11) NOT NULL,
+  `quant` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `osprod`
+--
+
+INSERT INTO `osprod` (`ID`, `osID`, `prodID`, `quant`) VALUES
+(64, 23, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -115,8 +164,16 @@ CREATE TABLE `produto` (
   `nome` varchar(50) NOT NULL,
   `tipo` varchar(50) NOT NULL,
   `descricao` varchar(100) NOT NULL,
-  `valorUn` decimal(2,0) NOT NULL
+  `valorUn` decimal(5,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `produto`
+--
+
+INSERT INTO `produto` (`ID`, `nome`, `tipo`, `descricao`, `valorUn`) VALUES
+('0001232', 'teste', 'ferramenta', 'teste', '23.00'),
+('543865', 'Parafuso Mudado', 'peca', 'MEU DEUS ALTEREI', '15.00');
 
 -- --------------------------------------------------------
 
@@ -169,6 +226,12 @@ ALTER TABLE `os`
   ADD KEY `funcID` (`funcID`);
 
 --
+-- Índices para tabela `osprod`
+--
+ALTER TABLE `osprod`
+  ADD PRIMARY KEY (`ID`);
+
+--
 -- Índices para tabela `produto`
 --
 ALTER TABLE `produto`
@@ -189,7 +252,7 @@ ALTER TABLE `userauth`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de tabela `compra`
@@ -201,19 +264,25 @@ ALTER TABLE `compra`
 -- AUTO_INCREMENT de tabela `funcionario`
 --
 ALTER TABLE `funcionario`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de tabela `os`
 --
 ALTER TABLE `os`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT de tabela `osprod`
+--
+ALTER TABLE `osprod`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de tabela `userauth`
