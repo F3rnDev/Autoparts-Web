@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 17-Jun-2024 às 05:24
+-- Tempo de geração: 17-Jun-2024 às 22:40
 -- Versão do servidor: 10.4.24-MariaDB
 -- versão do PHP: 7.4.29
 
@@ -58,11 +58,45 @@ INSERT INTO `cliente` (`ID`, `nome`, `cpf`, `telefone`, `email`, `cep`, `estado`
 
 CREATE TABLE `compra` (
   `ID` int(11) NOT NULL,
-  `prodID` varchar(50) NOT NULL,
   `filial` varchar(50) NOT NULL,
-  `quantidade` int(11) NOT NULL,
   `status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `compra`
+--
+
+INSERT INTO `compra` (`ID`, `filial`, `status`) VALUES
+(18, 'Joinville - SC', 'entregue');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `compraprod`
+--
+
+CREATE TABLE `compraprod` (
+  `ID` int(11) NOT NULL,
+  `compraID` int(11) NOT NULL,
+  `prodID` varchar(50) NOT NULL,
+  `quantidade` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `compraprod`
+--
+
+INSERT INTO `compraprod` (`ID`, `compraID`, `prodID`, `quantidade`) VALUES
+(33, 8, '31242321', 5),
+(34, 8, '543865', 9),
+(35, 9, '31242321', 4),
+(36, 9, '543865', 10),
+(37, 10, '543865', 1),
+(38, 11, '543865', 5),
+(39, 12, '31242321', 5),
+(40, 13, '31242321', 5),
+(41, 14, '543865', 5),
+(46, 18, '31242321', 1);
 
 -- --------------------------------------------------------
 
@@ -105,8 +139,9 @@ CREATE TABLE `inventario` (
 --
 
 INSERT INTO `inventario` (`ID`, `prodID`, `filial`, `quantidade`) VALUES
-(1, '543865', 'Joinville - SC', 10),
-(2, '543865', 'São Paulo - SP', 9);
+(1, '543865', 'Joinville - SC', 15),
+(9, '31242321', 'Joinville - SC', 9),
+(10, '543865', 'São Paulo - SP', 5);
 
 -- --------------------------------------------------------
 
@@ -131,7 +166,8 @@ CREATE TABLE `os` (
 --
 
 INSERT INTO `os` (`ID`, `tipo`, `status`, `clientID`, `funcID`, `dataInicio`, `dataFim`, `descrição`, `valorServiço`) VALUES
-(23, 'diagnostico', 'em andamento', 26, 1, '2024-06-16', NULL, 'teste', NULL);
+(23, 'diagnostico', 'em andamento', 26, 1, '2024-06-16', NULL, 'teste', NULL),
+(25, 'vendaPeca', 'concluido', 25, 1, '2024-06-17', '2024-06-17', 'teste', '23.43');
 
 -- --------------------------------------------------------
 
@@ -151,7 +187,8 @@ CREATE TABLE `osprod` (
 --
 
 INSERT INTO `osprod` (`ID`, `osID`, `prodID`, `quant`) VALUES
-(64, 23, 1, 1);
+(64, 23, 1, 1),
+(65, 25, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -172,7 +209,7 @@ CREATE TABLE `produto` (
 --
 
 INSERT INTO `produto` (`ID`, `nome`, `tipo`, `descricao`, `valorUn`) VALUES
-('0001232', 'teste', 'ferramenta', 'teste', '23.00'),
+('31242321', 'teste', 'peca', 'teste', '20.00'),
 ('543865', 'Parafuso Mudado', 'peca', 'MEU DEUS ALTEREI', '15.00');
 
 -- --------------------------------------------------------
@@ -201,8 +238,13 @@ ALTER TABLE `cliente`
 -- Índices para tabela `compra`
 --
 ALTER TABLE `compra`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `prodID` (`prodID`);
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Índices para tabela `compraprod`
+--
+ALTER TABLE `compraprod`
+  ADD PRIMARY KEY (`ID`);
 
 --
 -- Índices para tabela `funcionario`
@@ -252,13 +294,19 @@ ALTER TABLE `userauth`
 -- AUTO_INCREMENT de tabela `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de tabela `compra`
 --
 ALTER TABLE `compra`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT de tabela `compraprod`
+--
+ALTER TABLE `compraprod`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de tabela `funcionario`
@@ -270,19 +318,19 @@ ALTER TABLE `funcionario`
 -- AUTO_INCREMENT de tabela `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `os`
 --
 ALTER TABLE `os`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de tabela `osprod`
 --
 ALTER TABLE `osprod`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT de tabela `userauth`
@@ -293,12 +341,6 @@ ALTER TABLE `userauth`
 --
 -- Restrições para despejos de tabelas
 --
-
---
--- Limitadores para a tabela `compra`
---
-ALTER TABLE `compra`
-  ADD CONSTRAINT `compra_ibfk_1` FOREIGN KEY (`prodID`) REFERENCES `produto` (`ID`);
 
 --
 -- Limitadores para a tabela `inventario`
