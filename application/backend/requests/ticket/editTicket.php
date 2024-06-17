@@ -45,10 +45,52 @@ if ($_SERVER['REQUEST_METHOD'] == "POST")
 
     if($resultado)
     {
-        echo json_encode(["success" => "Ticket editado com sucesso!"]);
+        if ($status == 'concluido')
+        {
+            $comando = $pdo->prepare('SELECT * FROM osprod WHERE osID = :id');
+            $comando->bindParam(':id', $id);
+            $resultado = $comando->execute();
+            $products = $comando->fetchAll(PDO::FETCH_ASSOC);
+
+            $results = [];
+            
+            foreach ($products as $product)
+            {
+                $comando = $pdo->prepare('SELECT * FROM inventario WHERE ID = :id');
+                $comando->bindParam(':id', $product['prodID']);
+                $resultado = $comando->execute();
+                $productInfo = $comando->fetch(PDO::FETCH_ASSOC);
+
+                $comando = $pdo->prepare('UPDATE inventario SET quantidade = :quantidade WHERE ID = :id');
+
+                $qtd = $productInfo['quantidade'] - $product['quant'];
+
+                $comando->bindParam(':quantidade', $qtd);
+                $comando->bindParam(':id', $productInfo['ID']);
+                $resultado = $comando->execute();
+
+                if($resultado)
+                {
+                    $results[] = 'success';
+                }
+            }
+
+            if (count($results) == count($products))
+            {
+                echo json_encode(["success" => "Ticket editado com sucesso!"]);
+            }
+            else
+            {
+                echo json_encode(["error" => "Erro ao editar ticket"]);
+            }
+        }
+        else
+        {
+            echo json_encode(["success" => "Ticket editado com sucesso!"]);
+        }
     }
     else
     {
-        echo json_encode(["error" => "Erro ao editar ticket $date"]);
+        echo json_encode(["error" => "Erro ao editar ticket"]);
     }
 }

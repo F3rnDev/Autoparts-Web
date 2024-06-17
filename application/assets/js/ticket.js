@@ -1045,6 +1045,8 @@ function addOS()
             return;
         }
 
+        alert(data.success);
+
         updateTableInfo();
         $('#ticketModal').modal('hide');
     });
@@ -1111,6 +1113,8 @@ function editOS(status = undefined)
             return;
         }
 
+        alert(data.success);
+
         updateTableInfo();
         $('#ticketModal').modal('hide');
     });
@@ -1135,6 +1139,8 @@ function deleteOS()
                 alert(data.error);
                 return;
             }
+
+            alert(data.success);
 
             document.querySelector('.modal-backdrop').remove();
             $('#removeModal').hide();
