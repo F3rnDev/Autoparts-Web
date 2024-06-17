@@ -11,14 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $ticket = $comando->fetch(PDO::FETCH_ASSOC);
 
     //get products from osProd
-    for ($i = 0; $i < count($ticket); $i++)
-    {
-        $comando = $pdo->prepare("SELECT * FROM osprod WHERE osID = " . $ticket['ID']);
-        $resultado = $comando->execute();
-        $products = $comando->fetchAll(PDO::FETCH_ASSOC);
+    $comando = $pdo->prepare("SELECT * FROM osprod WHERE osID = " . $ticket['ID']);
+    $resultado = $comando->execute();
+    $products = $comando->fetchAll(PDO::FETCH_ASSOC);
 
-        $ticket['products'] = $products;
-    }
+    $ticket['products'] = $products;
 
     if($resultado)
     {

@@ -1,0 +1,105 @@
+.tableStatus{
+    width: 180px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.caminho{
+    background-color: #0D6EFD;
+    color: white;
+}
+
+.entregue
+{
+    background-color: #198754;
+    color: white;
+}
+
+.processamento
+{
+    background-color: #FFC107;
+    color: black;
+}
+
+.viewBtn
+{
+    width: 180px !important;
+}
+
+.statusModal{
+    width: 200px;
+}
+.insideSecUp{
+    margin-top: 50px;
+}
+.addProduct, .editProduct, .removeProduct
+{
+    position: relative;
+    top: 8px;
+}
+
+.qtdProd
+{
+    width: 250px;
+}
+
+.selectControl
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive{
+    max-height:650px;
+    overflow: auto;
+}
+
+.modal-dialog{
+    max-width: 800px;
+}
+
+.popover{
+    max-width: 550px;
+}
+
+.popover-body
+{
+    width: 550px;
+}
+
+.popover-body .popoverContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.popover-body .popoverBtns{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
+
+.popover-body .popoverBtns button{
+    margin-right: 10px;
+}
+
+.popover-body .filterList ul li{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.deleteModalDialog{
+    max-width: 500px;
+}
+
+.deleteHeader{
+    background-color: #dc3545;
+    color: white;
+}
